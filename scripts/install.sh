@@ -37,8 +37,12 @@ echo "building release binary …"
   swift build -c release --product pulse 2>/dev/null || swift build -c release
 )
 
-BIN=$(find "$TMPDIR_T/PulseUI/.build/release" -name "pulse" -type f | head -n1)
-[ -n "$BIN" ] || { echo "error: build produced no pulse binary" >&2; exit 1; }
+BIN=$(find "$TMPDIR_T/PulseUI/.build" -type f -path "*/release/pulse" -perm -111 -print -quit 2>/dev/null || true)
+if [ -z "$BIN" ]; then
+  echo "error: build completed but no executable pulse binary was found." >&2
+  echo "       searched SwiftPM release output under $TMPDIR_T/PulseUI/.build" >&2
+  exit 1
+fi
 
 mkdir -p "$PREFIX"
 install -m 0755 "$BIN" "$PREFIX/pulse"
@@ -50,8 +54,10 @@ case ":$PATH:" in
   *":$PREFIX:"*) : ;;
   *)
     echo
-    echo "note: add $PREFIX to your PATH:"
+    echo "note: pulse is installed, but $PREFIX is not on your PATH."
+    echo "       add it permanently to your shell configuration:"
     echo "  export PATH=\"$PREFIX:\$PATH\""
+    echo "       then open a new terminal or run that export command."
     ;;
 esac
 

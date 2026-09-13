@@ -1,0 +1,740 @@
+---
+import Base from "../layouts/Base.astro";
+import "../styles/demo.css";
+import { components, CATEGORIES, byCategory } from "../data/components";
+
+const tickerItems = [
+  "Button", "Badge", "Avatar", "Toggle", "Slider", "Rating", "Chips", "Stepper",
+  "OTP", "Modal", "Sheet", "TabBar", "Sidebar", "Carousel", "Accordion", "Toast",
+];
+const ticker = [...tickerItems, ...tickerItems];
+const hero = "alive.";
+const categoriesShown = CATEGORIES.slice(0, 6);
+---
+
+<Base title="PULSE — premium SwiftUI components">
+  <section class="hero">
+    <div class="container hero-grid-bg">
+      <div class="hero-top">
+        <span class="spec"><b>//</b> the swiftui design system</span>
+        <span class="spec"><b>v1.0</b>&nbsp;·&nbsp;token-themed</span>
+      </div>
+
+      <div class="hero-layout">
+        <div class="hero-copy">
+          <h1 class="display">
+            SwiftUI
+            <br />
+            components that
+            <br />
+            <span class="outline-text hero-outline">feel {hero}</span>
+          </h1>
+          <p class="hero-sub">
+            Copy-paste components with a real design system underneath —
+            tokens, Liquid Glass and springy motion. No frameworks, no gen,
+            no lock-in.
+          </p>
+          <div class="hero-cta">
+            <a class="btn btn-accent btn-lg" href="/studio/">
+              Open the studio
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+            </a>
+            <a class="btn btn-outline btn-lg" href="/components/">Browse components</a>
+          </div>
+          <div class="hero-chips">
+            <span class="cat-pill">{components.length} components</span>
+            <span class="cat-pill">8 categories</span>
+            <span class="cat-pill">100% SwiftUI</span>
+            <span class="cat-pill">MIT</span>
+          </div>
+        </div>
+
+        <div class="hero-console" aria-hidden="true">
+          <div class="console-inner">
+            <div class="console-top">
+              <span class="console-dots"><i></i><i></i><i></i></span>
+              <span class="console-title">pulse / terminal</span>
+              <span class="console-rec"><i class="alive-dot"></i><b>REC</b></span>
+            </div>
+            <div class="console-body">
+              <p class="cl"><span class="cp">$</span> pulse ui --components</p>
+              <p class="cl cl-1"><span class="ct">button</span> 8 variants · 4 sizes</p>
+              <p class="cl cl-2"><span class="ct">toggle</span> ios · checkbox · pill</p>
+              <p class="cl cl-3"><span class="ct">modal</span> fade-scale, tap-dismiss</p>
+              <p class="cl cl-4"><span class="ct">tabbar</span> floating glass pill</p>
+              <p class="cl cl-5"><span class="ct">chip</span> tinted · outlined · glass</p>
+              <p class="cl cl-6"><span class="ct">rating</span> stars · hearts · bolts</p>
+              <p class="console-caret"><span class="cp">$</span> _<span class="blink">▍</span></p>
+            </div>
+            <div class="console-ecg">
+              <svg viewBox="0 0 400 64" preserveAspectRatio="none" class="ecg-svg">
+                <path class="ecg-line" d="M0 46 L70 46 L88 46 L96 44 L102 50 L110 22 L116 58 L124 30 L130 46 L150 46 L170 46 L178 44 L184 50 L192 22 L198 58 L206 30 L212 46 L232 46 L252 46 L260 44 L266 50 L274 22 L280 58 L288 30 L294 46 L314 46 L334 46 L342 44 L348 50 L356 22 L362 58 L370 30 L376 46 L400 46" fill="none" stroke="var(--success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <div class="console-ecg-label">
+                <span>vitals stable</span>
+                <span class="spec bpm">~72 bpm</span>
+              </div>
+            </div>
+          </div>
+          <div class="corner c-tl"></div>
+          <div class="corner c-tr"></div>
+          <div class="corner c-bl"></div>
+          <div class="corner c-br"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      {
+        ticker.map((name) => (
+          <span class="ticker-chip"><b>{name}</b><i>✦</i></span>
+        ))
+      }
+      {
+        ticker.map((name) => (
+          <span class="ticker-chip"><b>{name}</b><i>✦</i></span>
+        ))
+      }
+    </div>
+  </div>
+
+  <section class="container section">
+    <div class="sec-head reveal">
+      <span class="eyebrow"><b>The library</b></span>
+      <h2 class="sec-title">One system.<br />Every surface.</h2>
+      <a class="btn btn-outline sec-fwd" href="/components/">
+        All components
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+      </a>
+    </div>
+
+    <div class="cat-rows">
+      {
+        categoriesShown.map((cat, i) => {
+          const list = byCategory(cat);
+          return (
+            <a key={cat} class="cat-row reveal" href={`/components/#${cat.toLowerCase()}`} style={`--d:${i * 30}ms`}>
+              <span class="cat-idx">{(i + 1).toString().padStart(2, "0")}</span>
+              <span class="cat-name">{cat}</span>
+              <span class="cat-count">{list.length.toString().padStart(2, "0")}</span>
+              <svg class="cat-arr" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+            </a>
+          );
+        })
+      }
+    </div>
+  </section>
+
+  <section class="container section studio-tease">
+    <div class="tease-grid">
+      <div class="tease-copy reveal">
+        <span class="eyebrow"><b>The studio</b></span>
+        <h2 class="sec-title">Every component.<br />One screen.<br />Any theme.</h2>
+        <p class="tease-sub">
+          All {components.length} components live at once. Tune the accent, flip light/dark,
+          feel the springs. Then copy the exact Swift theme it produced.
+        </p>
+        <div class="hero-cta">
+          <a class="btn btn-accent btn-lg" href="/studio/">
+            Start theming
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="tease-preview reveal">
+        <div class="tease-fakebar">
+          <span class="console-dots"><i></i><i></i><i></i></span>
+          <span class="spec console-title">live fixtures</span>
+        </div>
+        <div class="tease-knobs">
+          {
+            ["button", "toggle", "rating", "chip"].map((k) => (
+              <button class="tease-k" data-tease={k} key={k}>{k}</button>
+            ))
+          }
+        </div>
+        <div class="tease-stage">
+          <div data-tease-pane="button" class="tease-pane">
+            <button class="dk-btn dk-btn--primary dk-btn--md">Continue</button>
+            <button class="dk-btn dk-btn--outline dk-btn--md">Outline</button>
+            <button class="dk-btn dk-btn--gradient dk-btn--md">Gradient</button>
+          </div>
+          <div data-tease-pane="toggle" class="tease-pane" hidden>
+            <span class="dk-tgrow" style="display:flex">
+              <span class="dk-tgrow-t">Airplane Mode</span>
+              <span class="dk-tg-switch" data-tg><span class="dk-knob"></span></span>
+            </span>
+            <span class="dk-tgrow" style="display:flex">
+              <span class="dk-tgrow-t">Bluetooth</span>
+              <span class="dk-tg-switch is-on" data-tg><span class="dk-knob"></span></span>
+            </span>
+          </div>
+          <div data-tease-pane="rating" class="tease-pane" hidden>
+            <div class="dk-rate" data-rate>
+              {[1, 2, 3, 4, 5].map((n) => (
+                <button class:list={["dk-rate-btn", n <= 4 && "is-on"]} data-rate-btn={n}>
+                  <svg width="30" height="30" viewBox="0 0 24 24" fill={n <= 4 ? "currentColor" : "none"} stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 2l2.9 6.26 6.9.6-5.2 4.5 1.55 6.68L12 16.5l-6.15 3.54L7.4 13.36 2.2 8.86l6.9-.6Z"/></svg>
+                </button>
+              ))}
+              <span class="dk-rate-cap">4.0</span>
+            </div>
+          </div>
+          <div data-tease-pane="chip" class="tease-pane" hidden>
+            <button class="dk-chip dk-chip--tinted is-on" data-chip>
+              <svg class="dk-chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 7"/></svg>
+              Tinted
+            </button>
+            <button class="dk-chip dk-chip--outlined" data-chip>
+              <svg class="dk-chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 7"/></svg>
+              Outlined
+            </button>
+            <button class="dk-chip dk-chip--glass" data-chip>
+              <svg class="dk-chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 7"/></svg>
+              Glass
+            </button>
+          </div>
+        </div>
+        <div class="corner c-tl"></div>
+        <div class="corner c-tr"></div>
+        <div class="corner c-bl"></div>
+        <div class="corner c-br"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container section">
+    <div class="stat-strip reveal">
+      <div class="stat">
+        <span class="stat-n">{components.length}<span class="stat-unit">/{components.length}</span></span>
+        <span class="stat-l">ready to use</span>
+      </div>
+      <div class="stat">
+        <span class="stat-n">8</span>
+        <span class="stat-l">categories</span>
+      </div>
+      <div class="stat">
+        <span class="stat-n">2</span>
+        <span class="stat-l">themes · light/dark</span>
+      </div>
+      <div class="stat">
+        <span class="stat-n">∞</span>
+        <span class="stat-l">tokens to remix</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="container section cta-band-wrap">
+    <div class="cta-band reveal">
+      <div class="corner c-tl"></div>
+      <div class="corner c-tr"></div>
+      <div class="corner c-bl"></div>
+      <div class="corner c-br"></div>
+      <div class="cta-copy">
+        <span class="eyebrow"><b>Install</b></span>
+        <h2 class="sec-title">On-screen in two minutes.</h2>
+        <p class="tease-sub">
+          Copy a component's source file, call it like any SwiftUI view,
+          and the tokens handle the rest.
+        </p>
+        <div class="hero-cta">
+          <a class="btn btn-accent btn-lg" href="/install/">
+            View the guide
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </a>
+        </div>
+      </div>
+      <pre class="cta-cmd"><code><span class="cp">$</span> pulse ui add button
+<span class="cp">✓</span> Source installed to Sources/PulseUI
+<span class="cp">✓</span> Theme ready — tokens wired</code></pre>
+    </div>
+  </section>
+
+  <script is:inline>
+    // reveal on scroll
+    const io = new IntersectionObserver(
+      (obs) => obs.forEach((e) => e.isIntersecting && e.target.classList.add("is-visible")),
+      { threshold: 0.1 }
+    );
+    document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+
+    // tease fixtures switcher
+    document.querySelectorAll("[data-tease]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const k = btn.dataset.tease;
+        document.querySelectorAll("[data-tease]").forEach((b) => {
+          b.classList.toggle("is-on", b.dataset.tease === k);
+        });
+        document.querySelectorAll("[data-tease-pane]").forEach((p) => {
+          p.hidden = p.dataset.teasePane !== k;
+        });
+      });
+    });
+    document.querySelector("[data-tease='button']")?.classList.add("is-on");
+  </script>
+</Base>
+
+<style>
+  .hero {
+    position: relative;
+    padding: clamp(40px, 7vh, 76px) 0 clamp(30px, 5vh, 56px);
+    overflow: hidden;
+  }
+
+  .hero-grid-bg {
+    position: relative;
+  }
+  .hero-grid-bg::before {
+    content: "";
+    position: absolute;
+    inset: -80px -80px 0;
+    background-image:
+      linear-gradient(var(--hair) 1px, transparent 1px),
+      linear-gradient(90deg, var(--hair) 1px, transparent 1px);
+    background-size: 44px 44px;
+    -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 20%, #000 20%, transparent 75%);
+    mask-image: radial-gradient(ellipse 90% 70% at 50% 20%, #000 20%, transparent 75%);
+    pointer-events: none;
+  }
+
+  .hero-top {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding-bottom: clamp(28px, 5vh, 48px);
+  }
+  .hero-top .spec b {
+    color: var(--accent-ink);
+  }
+
+  .hero-layout {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: clamp(28px, 5vw, 72px);
+    align-items: center;
+  }
+
+  .hero-copy h1 {
+    font-size: clamp(2.4rem, 6.6vw, 4.6rem);
+  }
+  .hero-outline {
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  .hero-sub {
+    margin: 22px 0 26px;
+    max-width: 500px;
+    font-size: 1.06rem;
+    color: var(--fg-secondary);
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .hero-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 26px;
+  }
+
+  /* console panel */
+  .hero-console {
+    position: relative;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-xl);
+    background: linear-gradient(180deg, var(--panel) 0%, color-mix(in srgb, var(--bg-soft) 60%, var(--panel)) 100%);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+  }
+  .console-inner {
+    padding: 0 0 18px;
+  }
+  .console-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .console-dots {
+    display: flex;
+    gap: 6px;
+  }
+  .console-dots i {
+    width: 10px;
+    height: 10px;
+    border-radius: 99px;
+    background: var(--surface-strong);
+    border: 1px solid var(--border);
+  }
+  .console-dots i:first-child {
+    background: var(--error);
+    border-color: var(--error);
+  }
+  .console-dots i:nth-child(2) {
+    background: var(--warning);
+    border-color: var(--warning);
+  }
+  .console-dots i:last-child {
+    background: var(--success);
+    border-color: var(--success);
+  }
+  .console-title {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-tertiary);
+  }
+  .console-rec {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    color: var(--error);
+  }
+  .console-rec .alive-dot {
+    background: var(--error);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--error) 20%, transparent);
+  }
+  .console-rec b {
+    font-weight: 500;
+  }
+
+  .console-body {
+    padding: 14px 16px 6px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    line-height: 1.95;
+    color: var(--fg-secondary);
+  }
+  .console-body .cl {
+    opacity: 0;
+    animation: cl-in 0.5s var(--motion-smooth) forwards;
+  }
+  .console-body .cl-1 { animation-delay: 0.3s; }
+  .console-body .cl-2 { animation-delay: 0.6s; }
+  .console-body .cl-3 { animation-delay: 0.9s; }
+  .console-body .cl-4 { animation-delay: 1.2s; }
+  .console-body .cl-5 { animation-delay: 1.5s; }
+  .console-body .cl-6 { animation-delay: 1.8s; }
+  @keyframes cl-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: none; }
+  }
+  .cp {
+    color: var(--accent-ink);
+    font-weight: 500;
+  }
+  .ct {
+    color: var(--fg-tertiary);
+  }
+  .console-caret {
+    margin-top: 10px;
+    opacity: 1 !important;
+  }
+  .blink {
+    color: var(--accent);
+    animation: blink 1s steps(2) infinite;
+  }
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+
+  .console-ecg {
+    margin: 6px 16px 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: color-mix(in srgb, var(--bg-soft) 60%, transparent);
+    padding: 10px 12px 8px;
+  }
+  .ecg-svg {
+    width: 100%;
+    height: 54px;
+    display: block;
+  }
+  .ecg-line {
+    stroke-dasharray: 900;
+    stroke-dashoffset: 900;
+    animation: ecg-draw 5.5s linear infinite;
+  }
+  @keyframes ecg-draw {
+    to { stroke-dashoffset: 0; }
+  }
+  .console-ecg-label {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--fg-tertiary);
+    margin-top: 6px;
+  }
+  .bpm {
+    color: var(--success);
+  }
+
+  .corner {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--accent);
+    pointer-events: none;
+    opacity: 0.9;
+  }
+  .c-tl { top: -1px; left: -1px; border-right: none; border-bottom: none; border-top-left-radius: var(--radius-xl); }
+  .c-tr { top: -1px; right: -1px; border-left: none; border-bottom: none; border-top-right-radius: var(--radius-xl); }
+  .c-bl { bottom: -1px; left: -1px; border-right: none; border-top: none; border-bottom-left-radius: var(--radius-xl); }
+  .c-br { bottom: -1px; right: -1px; border-left: none; border-top: none; border-bottom-right-radius: var(--radius-xl); }
+
+  /* section heads */
+  .sec-head {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 24px;
+    margin-bottom: 34px;
+  }
+  .sec-title {
+    font-size: clamp(1.9rem, 4vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+  }
+  .sec-fwd {
+    align-self: center;
+  }
+
+  .cat-rows {
+    display: flex;
+    flex-direction: column;
+    border-block: 1px solid var(--border);
+  }
+  .cat-row {
+    display: grid;
+    grid-template-columns: 56px 1fr auto 24px;
+    align-items: center;
+    gap: 18px;
+    padding: 20px 8px;
+    border-bottom: 1px solid var(--border);
+    transition: background-color 0.18s ease, padding 0.3s var(--motion-snappy);
+  }
+  .cat-row:last-child {
+    border-bottom: none;
+  }
+  .cat-row:hover {
+    background: var(--surface-muted);
+    padding-inline: 18px;
+  }
+  .cat-idx {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--accent-ink);
+  }
+  .cat-name {
+    font-size: clamp(1.15rem, 3vw, 1.7rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .cat-count {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--fg-tertiary);
+  }
+  .cat-arr {
+    color: var(--fg-tertiary);
+    transition: transform 0.3s var(--motion-snappy), color 0.2s ease;
+  }
+  .cat-row:hover .cat-arr {
+    transform: translateX(6px);
+    color: var(--accent-ink);
+  }
+
+  /* studio tease */
+  .studio-tease {
+    padding-top: 8px;
+  }
+  .tease-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(28px, 5vw, 72px);
+    align-items: center;
+  }
+  .tease-sub {
+    margin: 18px 0 26px;
+    color: var(--fg-secondary);
+    max-width: 460px;
+  }
+
+  .tease-preview {
+    position: relative;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-xl);
+    background: var(--panel);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    padding-bottom: 10px;
+  }
+  .tease-fakebar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .tease-knobs {
+    display: flex;
+    gap: 6px;
+    padding: 12px 16px 4px;
+    flex-wrap: wrap;
+  }
+  .tease-k {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border-strong);
+    background: transparent;
+    color: var(--fg-tertiary);
+    cursor: pointer;
+    transition: all 0.18s var(--motion-snappy);
+  }
+  .tease-k:hover {
+    color: var(--fg);
+    border-color: var(--fg-secondary);
+  }
+  .tease-k.is-on {
+    background: var(--accent);
+    color: var(--accent-contrast);
+    border-color: var(--accent);
+  }
+  .tease-stage {
+    min-height: 190px;
+    display: grid;
+    place-items: center;
+  }
+  .tease-pane {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 28px;
+  }
+  .tease-pane[hidden] {
+    display: none;
+  }
+
+  /* stats */
+  .stat-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .stat {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--bg);
+    padding: 22px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .stat-n {
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+  .stat-unit {
+    font-size: 18px;
+    color: var(--fg-tertiary);
+    font-weight: 500;
+  }
+  .stat-l {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--fg-tertiary);
+  }
+
+  /* CTA band */
+  .cta-band {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 32px;
+    align-items: center;
+    padding: clamp(28px, 5vw, 52px);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-2xl);
+    background:
+      radial-gradient(80% 140% at 100% 0%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 55%),
+      var(--panel);
+    overflow: hidden;
+  }
+  .cta-cmd {
+    margin: 0;
+    padding: 18px 20px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--bg-soft);
+    font-size: 13px;
+    line-height: 2;
+    color: var(--fg-secondary);
+  }
+  .cta-cmd .cp {
+    color: var(--accent-ink);
+  }
+  .cta-cmd code {
+    font-family: var(--font-mono);
+  }
+
+  @media (max-width: 980px) {
+    .hero-layout {
+      grid-template-columns: 1fr;
+    }
+    .hero-console {
+      max-width: 520px;
+    }
+    .tease-grid,
+    .cta-band {
+      grid-template-columns: 1fr;
+    }
+    .cta-cmd {
+      overflow-x: auto;
+    }
+  }
+  @media (max-width: 720px) {
+    .stat-strip {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .sec-head {
+      grid-template-columns: 1fr;
+      align-items: start;
+    }
+    .hero-top {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    .hero-outline {
+      white-space: normal;
+    }
+  }
+</style>

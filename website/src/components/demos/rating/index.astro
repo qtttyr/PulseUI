@@ -1,0 +1,96 @@
+---
+import IconBlock from "../../IconBlock.astro";
+
+interface Props {
+  preview?: boolean;
+}
+const { preview = false } = Astro.props;
+---
+{
+  preview ? (
+    <div class="pv">
+      <span class="pv-grid"></span>
+      <span class="pv-glow"></span>
+      <div class="pv-scene">
+        <div class="stars">
+          {[1, 2, 3, 4, 5].map((n) => (
+            <span class:list={["st", n <= 4 && "on"]} style={`--i:${n}`}>
+              <IconBlock name="star" size={24} fill={n <= 4} />
+            </span>
+          ))}
+          <span class="cap">4.0</span>
+        </div>
+      </div>
+    </div>
+  ) : (
+    <div class="dk-stage dk-stage--col" style="gap: 22px">
+      <div class="dk-rate" data-rate>
+        {[1, 2, 3, 4, 5].map((n) => (
+          <button class:list={["dk-rate-btn", n <= 4 && "is-on"]} data-rate-btn={n} aria-label={`${n} star`}>
+            <IconBlock name="star" size={32} fill={n <= 4} />
+          </button>
+        ))}
+        <span class="dk-rate-cap" data-rate-cap>4.0</span>
+      </div>
+      <div style="display: flex; gap: 28px; align-items: center; flex-wrap: wrap; justify-content: center">
+        <div class="dk-rate" data-rate>
+          {[1, 2, 3].map((n) => (
+            <button class:list={["dk-rate-btn", n <= 2 && "is-on"]} data-rate-btn={n} aria-label={`${n} heart`}>
+              <IconBlock name="heart" size={26} fill={n <= 2} />
+            </button>
+          ))}
+        </div>
+        <div class="dk-rate" data-rate>
+          {[1, 2, 3, 4].map((n) => (
+            <button class:list={["dk-rate-btn", n <= 3 && "is-on"]} data-rate-btn={n} aria-label={`${n} bolt`}>
+              <IconBlock name="bolt" size={24} fill={n <= 3} />
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+<style>
+  .stars {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .st {
+    color: var(--surface-strong);
+    animation: rt-wiggle 4.2s ease-in-out infinite;
+    transform-origin: 50% 80%;
+  }
+  .st:nth-child(2) { animation-delay: 0.15s; }
+  .st:nth-child(3) { animation-delay: 0.3s; }
+  .st:nth-child(4) { animation-delay: 0.45s; }
+  .st:nth-child(5) { animation-delay: 0.6s; }
+  .st.on {
+    color: var(--accent);
+    filter: drop-shadow(0 0 8px color-mix(in srgb, var(--accent) 55%, transparent));
+    animation-name: rt-pop;
+  }
+  .cap {
+    margin-left: 8px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--fg-secondary);
+    padding: 4px 9px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--panel-2);
+  }
+  @keyframes rt-wiggle {
+    0%, 60%, 100% { transform: rotate(0) scale(1); }
+    68% { transform: rotate(10deg) scale(1.12); }
+    74% { transform: rotate(-8deg) scale(1.04); }
+  }
+  @keyframes rt-pop {
+    0%, 60%, 100% { transform: none; }
+    68% { transform: scale(1.3); }
+    78% { transform: scale(0.9); }
+    86% { transform: scale(1); }
+  }
+</style>

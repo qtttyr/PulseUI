@@ -1,0 +1,605 @@
+---
+import Base from "../layouts/Base.astro";
+import Demo from "../components/Demo.astro";
+import { components } from "../data/components";
+
+const allSlugs = components.map((c) => c.slug);
+const presets = [
+  { name: "Volt", hex: "#D9FE3E" },
+  { name: "Lime", hex: "#84CC16" },
+  { name: "Cyan", hex: "#22D3EE" },
+  { name: "Violet", hex: "#A78BFA" },
+  { name: "Rose", hex: "#FB7185" },
+  { name: "Amber", hex: "#FBBF24" },
+];
+---
+
+<Base title="Studio — theme everything — PULSE UI">
+  <section class="page-head">
+    <div class="container head-row">
+      <div>
+        <span class="eyebrow"><b>The studio</b>&nbsp;·&nbsp;live, all {components.length}</span>
+        <h1 class="display">One screen.<br /><span class="outline-text">Every component.</span></h1>
+        <p class="sub">
+          Re-skin the whole system live. Pick an accent, flip the theme,
+          tune the radius — then copy the exact Swift palette it produced.
+        </p>
+      </div>
+      <span class="spec head-spec"><b>live</b>&nbsp;·&nbsp;token-driven</span>
+    </div>
+  </section>
+
+  <div class="container studio-grid">
+    <aside class="controls" data-controls>
+      <div class="ctl-card">
+        <div class="ctl-head">
+          <span>Accent</span>
+          <span class="hex" data-hex="accent">#D9FE3E</span>
+        </div>
+        <div class="swatches">
+          {
+            presets.map((p, i) => (
+              <button
+                class:list={["swatch", i === 0 && "is-on"]}
+                data-preset={p.hex}
+                style={`--sw:${p.hex}`}
+                title={p.name}
+                aria-label={p.name}
+              ><i></i></button>
+            ))
+          }
+          <label class="swatch swatch-custom">
+            <input type="color" data-custom data-custom-hex="#D9FE3E" value="#D9FE3E" />
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="13" cy="6" r="3"/><path d="M7 20V12l4 3 4-4 2 2v7"/></svg>
+          </label>
+        </div>
+      </div>
+
+      <div class="ctl-card">
+        <div class="ctl-head"><span>Theme</span><span class="hex">canvas</span></div>
+        <div class="seg" data-skin-seg>
+          <button class="seg-btn" data-skin-btn="light">Light</button>
+          <button class="seg-btn" data-skin-btn="dark">Dark</button>
+          <button class="seg-btn is-on" data-skin-btn="auto">Auto</button>
+        </div>
+      </div>
+
+      <div class="ctl-card">
+        <div class="ctl-head">
+          <span>Radius</span>
+          <span class="hex" data-hex="radius">10px</span>
+        </div>
+        <input type="range" class="ctl-range" min="4" max="24" value="10" data-radius-input />
+        <div class="ctl-range-steps"><span>sharp</span><span>curvy</span></div>
+      </div>
+
+      <div class="ctl-card ctl-code">
+        <div class="ctl-head">
+          <span>Swift theme</span>
+          <button class="copy-btn" data-copy data-copy-target="swift-code">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect width="14" height="14" x="8" y="8" rx="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+            Copy
+          </button>
+        </div>
+        <pre class="swift" id="swift-code"></pre>
+      </div>
+
+      <div class="ctl-card ctl-code">
+        <div class="ctl-head">
+          <span>Project commands</span>
+        </div>
+        <label class="command-label" for="setup-command">1 · Setup theme</label>
+        <div class="command-copy">
+          <code id="setup-command"></code>
+          <button class="copy-btn" data-copy-target="setup-command" aria-label="Copy setup command">Copy</button>
+        </div>
+        <label class="command-label" for="add-command">2 · Add selected</label>
+        <div class="command-copy">
+          <code id="add-command"></code>
+          <button class="copy-btn" data-copy-target="add-command" aria-label="Copy add command">Copy</button>
+        </div>
+      </div>
+
+      <div class="ctl-card component-picker">
+        <div class="ctl-head">
+          <span>Components</span>
+          <button class="picker-toggle" type="button" data-toggle-components>Select all</button>
+        </div>
+        <p class="picker-help">Select what the project needs. The second command updates automatically.</p>
+        <div class="picker-list">
+          {components.map((component) => (
+            <label class="picker-item">
+              <input type="checkbox" value={component.slug.replace(/-/g, "_")} data-component-check />
+              <span>{component.name}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+    </aside>
+
+    <section class="canvas-wrap">
+      <div class="canvas" id="studio-canvas" data-theme="auto">
+        <div class="canvas-top">
+          <span class="canvas-live"><i class="alive-dot"></i>studio preview</span>
+          <span class="canvas-count spec">{components.length} / {components.length} mounted</span>
+        </div>
+        <Demo slugs={allSlugs} showLabels />
+      </div>
+    </section>
+  </div>
+
+  <script is:inline>
+    const canvas = document.getElementById("studio-canvas");
+    const presetBtns = [...document.querySelectorAll("[data-preset]")];
+    const customInput = document.querySelector("[data-custom]");
+    const skinBtns = [...document.querySelectorAll("[data-skin-btn]")];
+    const radiusInput = document.querySelector("[data-radius-input]");
+    const hexAccent = document.querySelector('[data-hex="accent"]');
+    const hexRadius = document.querySelector('[data-hex="radius"]');
+    const swiftPre = document.getElementById("swift-code");
+    const copyBtn = document.querySelector('[data-copy-target="swift-code"]');
+    const setupCommand = document.getElementById("setup-command");
+    const addCommand = document.getElementById("add-command");
+    const componentChecks = [...document.querySelectorAll("[data-component-check]")];
+    const toggleComponents = document.querySelector("[data-toggle-components]");
+
+    let accent = "#D9FE3E";
+    let skin = "auto";
+    let radius = 10;
+
+    function hexToRgb(h) {
+      const v = h.replace("#", "");
+      return [
+        parseInt(v.slice(0, 2), 16),
+        parseInt(v.slice(2, 4), 16),
+        parseInt(v.slice(4, 6), 16),
+      ];
+    }
+    function rgbToHex(r) {
+      const c = (n) => n.toString(16).padStart(2, "0");
+      return `#${c(r[0])}${c(r[1])}${c(r[2])}`;
+    }
+    function mix(hex, other, t) {
+      const a = hexToRgb(hex);
+      const b = hexToRgb(other);
+      return a.map((v, i) => Math.round(v + (b[i] - v) * t));
+    }
+    function luminance(hex) {
+      const [r, g, b] = hexToRgb(hex).map((v) => v / 255);
+      return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    }
+
+    function resolvedSkin() {
+      if (skin !== "auto") return skin;
+      return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+    }
+
+    function apply() {
+      const s = resolvedSkin();
+      canvas.dataset.theme = s;
+
+      const L = luminance(accent);
+      const contrast = L > 0.5 ? "#10150A" : "#FFFFFF";
+      const soft = `color-mix(in srgb, ${accent} 12%, transparent)`;
+      const ink =
+        s === "light"
+          ? rgbToHex(mix(accent, "#000000", 0.42))
+          : rgbToHex(mix(accent, "#FFFFFF", 0.22));
+
+      const style = canvas.style;
+      style.setProperty("--accent", accent);
+      style.setProperty("--accent-soft", soft);
+      style.setProperty("--accent-ink", ink);
+      style.setProperty("--accent-contrast", contrast);
+
+      const r = radius;
+      const scale = (t) => Math.max(0, Math.round(r * t));
+      style.setProperty("--radius-sm", `${scale(0.8)}px`);
+      style.setProperty("--radius-md", `${r}px`);
+      style.setProperty("--radius-lg", `${scale(1.4)}px`);
+      style.setProperty("--radius-xl", `${scale(1.8)}px`);
+      style.setProperty("--radius-2xl", `${scale(2.6)}px`);
+
+      hexAccent.textContent = accent.toUpperCase();
+      hexRadius.textContent = `${r}px`;
+      renderSwift();
+      renderCommands();
+    }
+
+    function renderSwift() {
+      const u = accent.replace("#", "").toUpperCase();
+      const L = luminance(accent);
+      const fg = L > 0.5 ? "0x10150A" : "0xFFFFFF";
+      swiftPre.textContent = `import SwiftUI
+
+// Generated in the Pulse Studio — inject at app root:
+//   .pulseTheme(pulseStudioTheme)
+let pulseStudioTheme = PulseTheme(
+    colors: ColorTokens(
+        accent: .init(hex: 0x${u}),
+        accentForeground: .init(hex: ${fg}),
+        gradientAccent: [
+            .init(hex: 0x${u}),
+            .init(hex: 0x46F0FF),
+        ]
+    ),
+    radius: RadiusTokens(md: ${radius}),
+    motion: .default
+)`;
+      copyBtn.dataset.copy = swiftPre.textContent;
+    }
+
+    function renderCommands() {
+      const selected = componentChecks.filter((input) => input.checked).map((input) => input.value);
+      setupCommand.textContent = `pulse init --accent ${accent} --radius ${radius}`;
+      addCommand.textContent = selected.length
+        ? `pulse add ${selected.join(" ")}`
+        : "pulse add <component...>";
+      setupCommand.dataset.copy = setupCommand.textContent;
+      addCommand.dataset.copy = addCommand.textContent;
+      toggleComponents.textContent = selected.length === componentChecks.length ? "Clear" : "Select all";
+    }
+
+    function selectPreset(hex) {
+      accent = hex.toUpperCase();
+      presetBtns.forEach((b) => b.classList.toggle("is-on", b.dataset.preset === hex));
+      customInput.value = hex;
+      apply();
+    }
+
+    presetBtns.forEach((btn) => {
+      btn.addEventListener("click", () => selectPreset(btn.dataset.preset));
+    });
+
+    customInput.addEventListener("input", () => {
+      presetBtns.forEach((b) => b.classList.remove("is-on"));
+      accent = customInput.value.toUpperCase();
+      apply();
+    });
+
+    skinBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        skinBtns.forEach((b) => b.classList.remove("is-on"));
+        btn.classList.add("is-on");
+        skin = btn.dataset.skinBtn;
+        apply();
+      });
+    });
+
+    radiusInput.addEventListener("input", () => {
+      radius = Number(radiusInput.value);
+      apply();
+    });
+
+    componentChecks.forEach((input) => input.addEventListener("change", renderCommands));
+    toggleComponents.addEventListener("click", () => {
+      const selectAll = componentChecks.some((input) => !input.checked);
+      componentChecks.forEach((input) => (input.checked = selectAll));
+      renderCommands();
+    });
+
+    document.querySelectorAll("[data-copy-target]").forEach((button) => {
+      button.addEventListener("click", async () => {
+        const target = document.getElementById(button.dataset.copyTarget);
+        await navigator.clipboard.writeText(target.dataset.copy || target.textContent);
+        const html = button.innerHTML;
+        button.innerHTML = "Copied!";
+        setTimeout(() => (button.innerHTML = html), 1800);
+      });
+    });
+
+    window.matchMedia("(prefers-color-scheme: light)").addEventListener("change", () => skin === "auto" && apply());
+    apply();
+  </script>
+</Base>
+
+<style>
+  .page-head {
+    padding: clamp(40px, 7vh, 72px) 0 26px;
+  }
+  .head-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .page-head h1 {
+    font-size: clamp(2.2rem, 5.5vw, 4rem);
+  }
+  .page-head .sub {
+    margin-top: 16px;
+    max-width: 560px;
+    color: var(--fg-secondary);
+    font-size: 1.04rem;
+  }
+  .head-spec {
+    white-space: nowrap;
+    padding-bottom: 8px;
+  }
+  .head-spec b {
+    color: var(--accent-ink);
+  }
+
+  .studio-grid {
+    display: grid;
+    grid-template-columns: 300px minmax(0, 1fr);
+    gap: 26px;
+    align-items: start;
+    padding-bottom: clamp(40px, 8vh, 80px);
+  }
+  @media (max-width: 1000px) {
+    .studio-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .controls {
+    position: sticky;
+    top: calc(var(--nav-h) + 16px);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 0;
+  }
+  @media (max-width: 1000px) {
+    .controls {
+      position: static;
+    }
+  }
+
+  .ctl-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--panel);
+    padding: 16px;
+  }
+
+  .command-label {
+    display: block;
+    margin: 12px 0 6px;
+    color: var(--fg-tertiary);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .command-copy {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    padding: 9px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface-muted);
+  }
+  .command-copy code {
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+    color: var(--accent-ink);
+    font: 11px/1.45 var(--font-mono);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .picker-toggle {
+    border: 0;
+    padding: 0;
+    color: var(--accent-ink);
+    background: none;
+    cursor: pointer;
+    font: inherit;
+    font-size: 11px;
+  }
+  .picker-help {
+    margin: -4px 0 12px;
+    color: var(--fg-tertiary);
+    font-size: 11px;
+    line-height: 1.45;
+  }
+  .picker-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px 10px;
+    max-height: 230px;
+    overflow: auto;
+  }
+  .picker-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    min-width: 0;
+    color: var(--fg-secondary);
+    cursor: pointer;
+    font-size: 11px;
+  }
+  .picker-item span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .picker-item input {
+    accent-color: var(--accent);
+  }
+
+  .ctl-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 14px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--fg-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .hex {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--fg-tertiary);
+    font-weight: 400;
+  }
+
+  .swatches {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .swatch {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
+    border: 1px solid var(--border-strong);
+    background: var(--sw);
+    cursor: pointer;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    transition: transform 0.2s var(--motion-snappy);
+  }
+  .swatch:hover {
+    transform: translateY(-2px) scale(1.05);
+  }
+  .swatch.is-on::after {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border: 2px solid var(--accent-ink);
+    border-radius: 13px;
+    opacity: 0.85;
+  }
+  .swatch-custom {
+    border-style: dashed;
+    color: var(--fg-tertiary);
+    background: var(--surface-muted);
+  }
+  .swatch-custom input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .seg {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--surface-muted);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 3px;
+  }
+  .seg-btn {
+    font: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 8px 6px;
+    border: none;
+    border-radius: 9px;
+    background: transparent;
+    color: var(--fg-tertiary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .seg-btn:hover {
+    color: var(--fg-secondary);
+  }
+  .seg-btn.is-on {
+    background: var(--accent);
+    color: var(--accent-contrast);
+  }
+
+  .ctl-range {
+    width: 100%;
+    accent-color: var(--accent);
+    margin-top: 2px;
+  }
+  .ctl-range-steps {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--fg-tertiary);
+    margin-top: 4px;
+  }
+
+  .ctl-code pre {
+    margin: 0;
+    padding: 14px;
+    border-radius: 10px;
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    font-size: 11.5px;
+    line-height: 1.7;
+    overflow-x: auto;
+    max-width: 100%;
+    max-height: 300px;
+    overflow-y: auto;
+    white-space: pre;
+  }
+
+  .copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font: inherit;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--fg-secondary);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 4px 9px;
+    cursor: pointer;
+    text-transform: none;
+    letter-spacing: 0;
+    transition: all 0.18s ease;
+  }
+  .copy-btn:hover {
+    color: var(--fg);
+    border-color: var(--fg-secondary);
+  }
+
+  .canvas-wrap {
+    min-width: 0;
+  }
+  .canvas {
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-2xl);
+    background: var(--bg);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    padding: clamp(16px, 3vw, 32px);
+    transition: background-color 0.4s ease;
+  }
+  .canvas-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 0 4px 18px;
+    border-bottom: 1px dashed var(--border);
+    margin-bottom: 18px;
+  }
+  .canvas-live {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--fg-tertiary);
+  }
+  .canvas-count {
+    font-size: 11px;
+  }
+</style>

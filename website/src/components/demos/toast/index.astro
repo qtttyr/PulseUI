@@ -1,0 +1,100 @@
+---
+import IconBlock from "../../IconBlock.astro";
+
+interface Props {
+  preview?: boolean;
+}
+const { preview = false } = Astro.props;
+---
+{
+  preview ? (
+    <div class="pv" style="place-items:start center; padding-top:34px">
+      <span class="pv-grid"></span>
+      <span class="pv-glow"></span>
+      <div class="pv-scene toast-wrap">
+        <div class="toast t1">
+          <span class="ic"><IconBlock name="check" size={15} /></span>
+          <div><b>Saved</b><span>Done.</span></div>
+          <span class="x">×</span>
+        </div>
+        <div class="toast t2">
+          <span class="ic"><IconBlock name="bell" size={15} /></span>
+          <div><b>Heads up</b><span>Auto-dismisses.</span></div>
+        </div>
+      </div>
+    </div>
+  ) : (
+    <div class="dk-stage" style="flex-direction: column; gap: 16px">
+      <div class="dk-toast-wrap" data-toast-wrap>
+        <div class="dk-toast dk-toast--success" data-toast hidden>
+          <span class="dk-toast-ic"><IconBlock name="check" size={16} /></span>
+          <div><div class="dk-toast-t">Saved</div><div class="dk-toast-m">Done.</div></div>
+          <button class="dk-toast-x" data-toast-x>×</button>
+        </div>
+        <div class="dk-toast dk-toast--error" data-toast hidden>
+          <span class="dk-toast-ic"><IconBlock name="x" size={16} /></span>
+          <div><div class="dk-toast-t">Failed</div><div class="dk-toast-m">Try again.</div></div>
+          <button class="dk-toast-x" data-toast-x>×</button>
+        </div>
+        <div class="dk-toast dk-toast--info" data-toast hidden>
+          <span class="dk-toast-ic"><IconBlock name="bell" size={16} /></span>
+          <div><div class="dk-toast-t">Heads up</div><div class="dk-toast-m">Synced in background.</div></div>
+          <button class="dk-toast-x" data-toast-x>×</button>
+        </div>
+        <span class="dk-note">toasts queue, slide, auto-dismiss</span>
+      </div>
+      <div style="display: flex; gap: 10px">
+        <button class="dk-btn dk-btn--primary dk-btn--md" data-toast-btn data-toast-index="0">Save</button>
+        <button class="dk-btn dk-btn--destructive dk-btn--md" data-toast-btn data-toast-index="1">Fail</button>
+        <button class="dk-btn dk-btn--outline dk-btn--md" data-toast-btn data-toast-index="2">Notify</button>
+      </div>
+    </div>
+  )
+}
+<style>
+  .toast-wrap {
+    position: relative;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .toast {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 226px;
+    padding: 11px 14px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--panel) 94%, transparent);
+    box-shadow: var(--shadow-md);
+    backdrop-filter: blur(12px);
+  }
+  .toast .ic {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 9px;
+    flex-shrink: 0;
+  }
+  .toast b { font-size: 13px; display: block; }
+  .toast div span { font-size: 11px; color: var(--fg-secondary); }
+  .toast .x { color: var(--fg-tertiary); margin-left: auto; }
+  .t1 {
+    border-color: color-mix(in srgb, var(--success) 30%, transparent);
+    animation: toast-age 8s ease-in-out infinite;
+  }
+  .t1 .ic { background: var(--success); color: #06130a; }
+  .t2 {
+    animation: toast-age 8s ease-in-out infinite;
+    animation-delay: 3s;
+  }
+  .t2 .ic { background: var(--accent); color: var(--accent-contrast); }
+  @keyframes toast-age {
+    0%, 8%, 100% { opacity: 0; transform: translateX(140%); }
+    14%, 46% { opacity: 1; transform: translateX(0); }
+    55% { opacity: 0; transform: translateY(-10px); }
+  }
+</style>

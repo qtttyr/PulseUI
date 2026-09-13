@@ -1,0 +1,277 @@
+---
+import Base from "../../layouts/Base.astro";
+import Specimen from "../../components/Specimen.astro";
+import { components, CATEGORIES } from "../../data/components";
+import { componentMap } from "../../data/components";
+
+const cats = ["All", ...CATEGORIES];
+---
+
+<Base title="Components — PULSE UI">
+  <section class="page-head">
+    <div class="container">
+      <div class="head-row">
+        <span class="eyebrow"><b>The library</b>&nbsp;·&nbsp;{components.length} components, live</span>
+        <span class="spec"><b>all</b> of them are real SwiftUI</span>
+      </div>
+      <h1 class="display">Components<br /><span class="outline-text">you can poke.</span></h1>
+      <p class="sub">
+        Every one of these is an interactive stand-in for the real SwiftUI
+        component — same tokens, same motion. Click through, then grab the
+        source.
+      </p>
+
+      <div class="filters" data-filters>
+        {
+          cats.map((c, i) => (
+            <button class:list={["filter-chip", i === 0 && "is-on"]} data-filter={c === "All" ? "*" : c.toLowerCase()} key={c}>
+              {c === "All" ? `All · ${components.length}` : c}
+            </button>
+          ))
+        }
+        <span class="filter-count" data-count></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="container">
+    <div class="cgrid" data-grid>
+      {
+        components.map((c) => {
+          const meta = componentMap[c.slug];
+          return (
+            <a
+              class:list={["ccard", "reveal"]}
+              href={`/components/${c.slug}/`}
+              data-card={c.category.toLowerCase()}
+              style={`--d:${(components.indexOf(c) % 6) * 30}ms`}
+            >
+              <div class="ccard-top">
+                <span class="cat-pill">{c.category}</span>
+                <span class="ccard-idx">{(components.indexOf(c) + 1).toString().padStart(2, "0")}</span>
+              </div>
+              <div class="ccard-spec"><Specimen slug={c.slug} /></div>
+              <div class="ccard-foot">
+                <span class="ccard-name">{meta.name}</span>
+                <span class="ccard-go">
+                  Open
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+                </span>
+              </div>
+            </a>
+          );
+        })
+      }
+    </div>
+  </section>
+
+  <script is:inline>
+    const grid = document.querySelector("[data-grid]");
+    const countEl = document.querySelector("[data-count]");
+    const cards = [...document.querySelectorAll("[data-card]")];
+
+    const setFilter = (key) => {
+      let n = 0;
+      cards.forEach((card) => {
+        const show = key === "*" || card.dataset.card === key;
+        card.hidden = !show;
+        if (show) n++;
+      });
+      if (countEl) countEl.textContent = `${String(n).padStart(2, "0")} shown`;
+
+      // re-reveal visible cards
+      cards.forEach((card) => {
+        if (!card.hidden) {
+          card.classList.add("is-visible");
+          card.style.transitionDelay = "";
+        }
+      });
+    };
+
+    document.querySelectorAll("[data-filter]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("[data-filter]").forEach((b) => b.classList.remove("is-on"));
+        btn.classList.add("is-on");
+        setFilter(btn.dataset.filter);
+      });
+    });
+
+    const hash = location.hash.replace("#", "").toLowerCase();
+    if (hash) {
+      const match = document.querySelector(`[data-filter="${hash}"]`);
+      if (match) match.click();
+    }
+
+    const io = new IntersectionObserver(
+      (obs) => obs.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.classList.add("is-visible");
+          io.unobserve(e.target);
+        }
+      }),
+      { threshold: 0.08 }
+    );
+    document.querySelectorAll(".ccard.reveal").forEach((el) => io.observe(el));
+    setFilter("*");
+  </script>
+</Base>
+
+<style>
+  .page-head {
+    padding: clamp(40px, 7vh, 76px) 0 30px;
+  }
+  .head-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+  .page-head h1 {
+    font-size: clamp(2.2rem, 5.5vw, 4rem);
+  }
+  .page-head .sub {
+    margin-top: 16px;
+    max-width: 560px;
+    color: var(--fg-secondary);
+    font-size: 1.04rem;
+  }
+
+  .filters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 28px;
+    align-items: center;
+  }
+  .filter-chip {
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border-strong);
+    background: transparent;
+    color: var(--fg-secondary);
+    cursor: pointer;
+    font-family: var(--font-sans);
+    transition: all 0.18s var(--motion-snappy);
+  }
+  .filter-chip:hover {
+    color: var(--fg);
+    border-color: var(--fg-secondary);
+  }
+  .filter-chip.is-on {
+    background: var(--fg);
+    color: var(--bg);
+    border-color: var(--fg);
+  }
+  .filter-count {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--fg-tertiary);
+  }
+
+  .cgrid {
+    margin-top: 30px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  @media (max-width: 1000px) {
+    .cgrid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 620px) {
+    .cgrid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .ccard {
+    display: flex;
+    flex-direction: column;
+    min-height: 300px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    background: var(--panel);
+    overflow: hidden;
+    transition: transform 0.35s var(--motion-snappy), box-shadow 0.35s ease,
+      border-color 0.35s ease;
+  }
+  .ccard:hover {
+    transform: translateY(-5px);
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-lg);
+  }
+  .ccard[hidden] {
+    display: none;
+  }
+
+  .ccard-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+  }
+  .ccard-idx {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--fg-tertiary);
+  }
+
+  .ccard-spec {
+    flex: 1;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 16 / 10;
+    padding: 12px;
+    border-block: 1px solid var(--border);
+    background:
+      radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--accent) 8%, transparent), transparent 55%);
+    overflow: hidden;
+  }
+  .ccard-spec :global(.spec) {
+    width: 100%;
+    height: 100%;
+    transition: transform 0.45s var(--motion-snappy);
+  }
+  .ccard:hover .ccard-spec :global(.spec) {
+    transform: scale(1.04);
+  }
+
+  .ccard-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+  }
+  .ccard-name {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .ccard-go {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent-ink);
+    opacity: 0;
+    transform: translateX(-6px);
+    transition: opacity 0.2s ease, transform 0.25s var(--motion-snappy);
+  }
+  .ccard:hover .ccard-go {
+    opacity: 1;
+    transform: none;
+  }
+
+  .ccard :global(.dk-tg-switch .dk-knob),
+  .ccard :global(.dk-tg-check .dk-knob),
+  .ccard :global(.dk-tg-pill .dk-knob) {
+    transition: transform 0.28s var(--motion-bounce);
+  }
+</style>

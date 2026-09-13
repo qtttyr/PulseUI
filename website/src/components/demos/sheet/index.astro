@@ -1,0 +1,100 @@
+---
+interface Props {
+  preview?: boolean;
+}
+const { preview = false } = Astro.props;
+---
+{
+  preview ? (
+    <div class="pv" style="place-items:start center; padding-top:40px">
+      <span class="pv-grid"></span>
+      <span class="pv-glow" style="width:220px;height:160px"></span>
+      <div class="pv-scene">
+        <div class="sheet">
+          <span class="grip"></span>
+          <b>New message</b>
+          <span class="m">Detents remember the last drag position.</span>
+          <button>Send</button>
+        </div>
+      </div>
+    </div>
+  ) : (
+    <div class="dk-stage">
+      <button class="dk-btn dk-btn--primary dk-btn--md" data-sheet-open>Present sheet</button>
+      <button class="dk-btn dk-btn--outline dk-btn--md" data-sheet-open="confirm">Application form</button>
+      <div data-sheet hidden>
+        <div class="dk-sheet-scrim" data-sheet-close></div>
+        <div class="dk-sheet">
+          <span class="dk-sheet-grip"></span>
+          <span class="dk-type dk-type--title3">New message</span>
+          <p class="dk-type dk-type--callout">Drag the handle for detents — the sheet remembers the last one.</p>
+          <div style="display: flex; gap: 8px">
+            <button class="dk-btn dk-btn--primary dk-btn--sm" data-sheet-close>Send</button>
+            <button class="dk-btn dk-btn--ghost dk-btn--sm" data-sheet-close>Dismiss</button>
+          </div>
+        </div>
+      </div>
+      <div data-sheet="confirm" hidden>
+        <div class="dk-sheet-scrim" data-sheet-close></div>
+        <div class="dk-sheet">
+          <span class="dk-sheet-grip"></span>
+          <span class="dk-type dk-type--title3">Confirm deletion</span>
+          <p class="dk-type dk-type--callout">This removes 12 items permanently. This action cannot be undone.</p>
+          <div style="display: flex; gap: 8px">
+            <button class="dk-btn dk-btn--destructive dk-btn--sm" data-sheet-close>Delete</button>
+            <button class="dk-btn dk-btn--ghost dk-btn--sm" data-sheet-close>Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+<style>
+  .sheet {
+    width: 274px;
+    border-radius: 20px 20px 0 0;
+    border: 1px solid var(--border);
+    border-bottom: 0;
+    background: color-mix(in srgb, var(--panel) 94%, transparent);
+    backdrop-filter: blur(16px);
+    padding: 16px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    color: var(--fg);
+    box-shadow: 0 -18px 50px color-mix(in srgb, var(--accent) 16%, transparent);
+    animation: sh-up 5.8s ease-in-out infinite;
+  }
+  .grip {
+    align-self: center;
+    width: 38px;
+    height: 4px;
+    border-radius: 99px;
+    background: var(--surface-strong);
+    margin-bottom: 4px;
+  }
+  .sheet b {
+    font-size: 17px;
+    font-weight: 750;
+  }
+  .sheet .m {
+    font-size: 12px;
+    color: var(--fg-secondary);
+    line-height: 1.5;
+  }
+  .sheet button {
+    margin-top: 4px;
+    border: 0;
+    border-radius: var(--radius-md);
+    padding: 11px;
+    font-weight: 700;
+    font-size: 13px;
+    background: var(--accent);
+    color: var(--accent-contrast);
+  }
+  @keyframes sh-up {
+    0%, 14%, 100% { transform: translateY(150%); }
+    22%, 74% { transform: translateY(0); }
+    86% { transform: translateY(150%); }
+  }
+</style>

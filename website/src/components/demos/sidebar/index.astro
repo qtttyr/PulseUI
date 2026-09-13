@@ -1,0 +1,76 @@
+---
+import IconBlock from "../../IconBlock.astro";
+
+interface Props {
+  preview?: boolean;
+}
+const { preview = false } = Astro.props;
+---
+{
+  preview ? (
+    <div class="pv">
+      <span class="pv-grid"></span>
+      <span class="pv-glow"></span>
+      <div class="pv-scene">
+        <div class="rail">
+          <span class="it on"><IconBlock name="house" size={17} /></span>
+          <span class="it"><IconBlock name="search" size={17} /></span>
+          <span class="it"><IconBlock name="bell" size={17} /></span>
+          <span class="it"><IconBlock name="sliders" size={17} /></span>
+        </div>
+      </div>
+    </div>
+  ) : (
+    <div class="dk-stage" style="align-items: stretch; gap: 26px">
+      <div class="dk-sidebar" data-side>
+        <button class="dk-sidebar-item is-on" data-side-item><IconBlock name="house" size={17} /> Home</button>
+        <button class="dk-sidebar-item" data-side-item><IconBlock name="search" size={17} /> Search</button>
+        <button class="dk-sidebar-item" data-side-item><IconBlock name="bell" size={17} /> Notifications <span class="dk-side-badge">3</span></button>
+        <button class="dk-sidebar-item" data-side-item><IconBlock name="sliders" size={17} /> Settings</button>
+      </div>
+      <div class="dk-sidebar dk-sidebar--rail" data-side>
+        <button class="dk-sidebar-item is-on" data-side-item><IconBlock name="house" size={18} /></button>
+        <button class="dk-sidebar-item" data-side-item><IconBlock name="search" size={18} /></button>
+        <button class="dk-sidebar-item" data-side-item><IconBlock name="person" size={18} /></button>
+        <button class="dk-sidebar-item" data-side-item><IconBlock name="gear" size={18} /></button>
+      </div>
+    </div>
+  )
+}
+<style>
+  .rail {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    padding: 9px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: color-mix(in srgb, var(--panel) 90%, transparent);
+  }
+  .it {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 40px;
+    border-radius: 11px;
+    color: var(--fg-tertiary);
+    animation: sb-idle 4.8s ease-in-out infinite;
+  }
+  .it.on {
+    background: var(--accent);
+    color: var(--accent-contrast);
+    animation: sb-on 4.8s ease-in-out infinite;
+    box-shadow: 0 5px 16px color-mix(in srgb, var(--accent) 40%, transparent);
+  }
+  .it:nth-child(2) { animation-delay: 1.2s; }
+  .it:nth-child(3) { animation-delay: 2.4s; }
+  .it:nth-child(4) { animation-delay: 3.6s; }
+  @keyframes sb-idle {
+    0%, 18%, 100% { transform: scale(1); color: var(--fg-tertiary); }
+    26%, 44% { transform: scale(1.06); color: var(--fg); background: var(--surface-muted); }
+  }
+  @keyframes sb-on {
+    0%, 18%, 100% { background: var(--accent); transform: translateX(0); }
+    26%, 44% { transform: translateX(4px) scale(1.05); }
+  }
+</style>

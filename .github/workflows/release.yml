@@ -1,0 +1,54 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    strategy:
+      matrix:
+        include:
+          - os: macos-15
+            name: macos-arm64
+          - os: macos-15
+            name: macos-x86_64
+          - os: ubuntu-22.04
+            name: linux-x86_64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: swift-actions/setup-swift@v2
+        with:
+          swift-version: "6.0"
+      - uses: actions/checkout@v4
+
+      - name: Build pulse (release)
+        run: swift build -c release --product pulse
+
+      - name: Archive binary
+        run: |
+          mkdir -p dist
+          cp .build/release/pulse "dist/pulse-${{ matrix.name }}"
+          tar -czf "dist/pulse-${{ matrix.name }}.tar.gz" -C dist "pulse-${{ matrix.name }}"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pulse-${{ matrix.name }}
+          path: dist/pulse-${{ matrix.name }}*
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/**/*.tar.gz
+          generate_release_notes: true

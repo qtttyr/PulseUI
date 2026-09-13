@@ -1,0 +1,632 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base title="Playground — Pulse UI">
+  <section class="page-head">
+    <div class="container">
+      <p class="eyebrow"><b>Playground</b>&nbsp;·&nbsp;feel the springs</p>
+      <h1>Feel the motion,<br /><span class="outline-text">in the browser.</span></h1>
+      <p class="sub">
+        A taste of Pulse behavior — pure CSS & JS stand-ins for the real SwiftUI
+        springs. The actual components live in your app.
+      </p>
+    </div>
+  </section>
+
+  <section class="container pgrid">
+    <div class="pcard" data-p="#accent" data-accordion>
+      <div class="phead"><span>Accordion</span><code>PulseAccordion</code></div>
+      <div class="pbody">
+        <div class="acc">
+          <button class="acc-item open" data-acc-btn>
+            <span class="acc-q">What is Pulse UI?</span>
+            <span class="acc-caret">▾</span>
+          </button>
+          <div class="acc-a"><div class="acc-a-inner">
+            A premium, copy-paste component library for SwiftUI — themed, animated, accessible.
+          </div></div>
+          <button class="acc-item" data-acc-btn>
+            <span class="acc-q">How do I install one component?</span>
+            <span class="acc-caret">▾</span>
+          </button>
+          <div class="acc-a"><div class="acc-a-inner">
+            Paste its source file into your project and call it. Tokens do the rest.
+          </div></div>
+          <button class="acc-item" data-acc-btn>
+            <span class="acc-q">Is it really free?</span>
+            <span class="acc-caret">▾</span>
+          </button>
+          <div class="acc-a"><div class="acc-a-inner">
+            Yes — open source, forever, for any project.
+          </div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pcard" data-p="#accent" data-toggle-group>
+      <div class="phead"><span>Toggles</span><code>PulseToggle</code></div>
+      <div class="pbody">
+        <label class="trow"><span>Airplane Mode</span>
+          <span class="sw" data-switch><span class="knob"></span></span>
+        </label>
+        <label class="trow"><span>Bluetooth</span>
+          <span class="sw" data-switch><span class="knob"></span></span>
+        </label>
+        <label class="trow"><span>Dark details</span>
+          <span class="sw on" data-switch><span class="knob"></span></span>
+        </label>
+        <div class="sep"></div>
+        <label class="trow"><span>Checkbox</span>
+          <span class="cb on" data-checkbox><span class="cb-k">✓</span></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="pcard" data-p="#accent">
+      <div class="phead"><span>Slider</span><code>PulseSlider</code></div>
+      <div class="pbody" data-slider>
+        <div class="slider">
+          <input type="range" min="0" max="100" value="68" class="slider-input" style="--p:68%" data-slider-input />
+          <div class="slider-value" data-slider-value>68%</div>
+        </div>
+        <p class="hint">Drag it. Then restyle everything in the <a href="/studio/">Studio</a>.</p>
+      </div>
+    </div>
+
+    <div class="pcard" data-p="#accent" data-rating>
+      <div class="phead"><span>Rating</span><code>PulseRating</code></div>
+      <div class="pbody">
+        <div class="stars" data-stars>
+          <button class="star">★</button>
+          <button class="star">★</button>
+          <button class="star">★</button>
+          <button class="star">★</button>
+          <button class="star">★</button>
+        </div>
+        <div class="stars-hint" data-stars-val>4 / 5</div>
+        <p class="hint center">Tap a star — feel the bounce.</p>
+      </div>
+    </div>
+
+    <div class="pcard" data-p="#accent" data-stepper>
+      <div class="phead"><span>Stepper</span><code>PulseStepper</code></div>
+      <div class="pbody">
+        <div class="step">
+          <button class="step-btn" data-step-minus>−</button>
+          <span class="step-val" data-step-val>8</span>
+          <button class="step-btn" data-step-plus>+</button>
+        </div>
+        <p class="hint center">0 … 100</p>
+      </div>
+    </div>
+
+    <div class="pcard" data-p="#accent" data-tabs>
+      <div class="phead"><span>Segmented picker</span><code>PulsePicker</code></div>
+      <div class="pbody">
+        <div class="seg" data-seg>
+          <button class="seg-btn active" data-seg-btn>Segments</button>
+          <button class="seg-btn" data-seg-btn>Manual</button>
+          <button class="seg-btn" data-seg-btn>Auto</button>
+        </div>
+        <p class="hint center" data-seg-state>Segments selected</p>
+      </div>
+    </div>
+
+    <div class="pcard" data-p="#accent" data-chips>
+      <div class="phead"><span>Chips</span><code>PulseChip</code></div>
+      <div class="pbody">
+        <div class="chips" data-chips>
+          <button class="chip active" data-chip>Swift</button>
+          <button class="chip" data-chip>SwiftUI</button>
+          <button class="chip" data-chip>UIKit</button>
+          <button class="chip active" data-chip>v1.0</button>
+        </div>
+        <p class="hint center">Multi-select filters</p>
+      </div>
+    </div>
+
+    <div class="pcard" data-p="#accent" data-counter>
+      <div class="phead"><span>Counter</span><code>PulseCounter</code></div>
+      <div class="pbody">
+        <button class="count-btn" data-count-go>＋ 1289</button>
+        <p class="hint center">Tap to tick up by 1.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="container note">
+    <p>
+      These playground cards are approximations rendered with CSS transitions.
+      The real pulse comes from SwiftUI springs —
+      <a href="/components/">meet the components</a>.
+    </p>
+    <a class="btn btn-accent" href="/studio/">
+      Restyle all of it in the studio
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+    </a>
+  </section>
+
+  <script>
+    // ---------- Accordion ----------
+    document.querySelectorAll("[data-accordion] .acc-item").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const card = btn.closest(".acc");
+        const wasOpen = btn.classList.contains("open");
+        card.querySelectorAll(".acc-item").forEach((b) => b.classList.remove("open"));
+        if (!wasOpen) btn.classList.add("open");
+      });
+    });
+
+    // ---------- Toggles ----------
+    document.querySelectorAll("[data-switch]").forEach((sw) =>
+      sw.addEventListener("click", () => sw.classList.toggle("on"))
+    );
+    document.querySelectorAll("[data-checkbox]").forEach((cb) =>
+      cb.addEventListener("click", () => cb.classList.toggle("on"))
+    );
+
+    // ---------- Slider ----------
+    document.querySelectorAll("[data-slider-input]").forEach((inp) => {
+      const sync = () => {
+        const val = inp.closest("[data-slider]").querySelector("[data-slider-value]");
+        val.textContent = inp.value + "%";
+        inp.style.setProperty("--p", inp.value + "%");
+      };
+      inp.addEventListener("input", sync);
+      sync();
+    });
+
+    // ---------- Rating ----------
+    document.querySelectorAll("[data-rating]").forEach((card) => {
+      const stars = card.querySelectorAll(".star");
+      stars.forEach((s, i) =>
+        s.addEventListener("click", () => {
+          stars.forEach((o, j) => o.classList.toggle("on", j <= i));
+          card.querySelector("[data-stars-val]").textContent = `${i + 1} / 5`;
+        })
+      );
+    });
+
+    // ---------- Stepper ----------
+    document.querySelectorAll("[data-stepper]").forEach((card) => {
+      const val = card.querySelector("[data-step-val]");
+      let n = 8;
+      card.querySelector("[data-step-minus]").addEventListener("click", () => {
+        n = Math.max(0, n - 1);
+        val.textContent = n;
+      });
+      card.querySelector("[data-step-plus]").addEventListener("click", () => {
+        n = Math.min(100, n + 1);
+        val.textContent = n;
+      });
+    });
+
+    // ---------- Segmented ----------
+    document.querySelectorAll("[data-seg]").forEach((seg) => {
+      const state = seg.closest("[data-tabs]").querySelector("[data-seg-state]");
+      seg.querySelectorAll("[data-seg-btn]").forEach((b) =>
+        b.addEventListener("click", () => {
+          seg.querySelectorAll("[data-seg-btn]").forEach((o) => o.classList.remove("active"));
+          b.classList.add("active");
+          state.textContent = `${b.textContent} selected`;
+        })
+      );
+    });
+
+    // ---------- Chips ----------
+    document.querySelectorAll("[data-chip]").forEach((c) =>
+      c.addEventListener("click", () => c.classList.toggle("active"))
+    );
+
+    // ---------- Counter ----------
+    document.querySelectorAll("[data-count-go]").forEach((btn) => {
+      let n = 1289;
+      btn.addEventListener("click", () => {
+        n += 1;
+        btn.textContent = `＋ ${n.toLocaleString()}`;
+        btn.classList.remove("pop");
+        void btn.offsetWidth;
+        btn.classList.add("pop");
+      });
+    });
+  </script>
+</Base>
+
+<style>
+  .page-head {
+    padding: clamp(40px, 7vh, 72px) 0 20px;
+  }
+  .page-head h1 {
+    font-size: clamp(2rem, 4.5vw, 3.2rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+  .sub {
+    margin-top: 12px;
+    max-width: 560px;
+    color: var(--fg-secondary);
+  }
+
+  .pgrid {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .pcard {
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: var(--panel);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s var(--motion-snappy), box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+  .pcard:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--border-strong);
+  }
+
+  .phead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .phead span {
+    font-weight: 600;
+    font-size: 14.5px;
+  }
+  .phead code {
+    font-size: 11.5px;
+    color: var(--fg-tertiary);
+  }
+
+  .pbody {
+    padding: 22px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    flex: 1;
+    justify-content: center;
+  }
+
+  .hint {
+    font-size: 12.5px;
+    color: var(--fg-tertiary);
+    margin-top: 4px;
+  }
+  .hint.center {
+    text-align: center;
+  }
+
+  .note {
+    margin-top: 32px;
+    color: var(--fg-tertiary);
+    font-size: 13.5px;
+  }
+  .note a {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* ---------- Accordion ---------- */
+  .acc {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .acc-item {
+    width: 100%;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface-muted);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 11px 14px;
+    color: var(--fg);
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+  }
+  .acc-item:hover {
+    background: var(--surface-strong);
+  }
+  .acc-caret {
+    transition: transform 0.25s var(--motion-snappy);
+    color: var(--fg-tertiary);
+  }
+  .acc-item.open .acc-caret {
+    transform: rotate(180deg);
+    color: var(--accent);
+  }
+  .acc-a {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.35s var(--motion-snappy);
+  }
+  .acc-item.open + .acc-a {
+    grid-template-rows: 1fr;
+  }
+  .acc-a-inner {
+    overflow: hidden;
+    font-size: 13.5px;
+    color: var(--fg-secondary);
+    padding-inline: 4px;
+  }
+
+  /* ---------- Toggles ---------- */
+  .trow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    color: var(--fg);
+  }
+  .sw {
+    width: 46px;
+    height: 28px;
+    border-radius: 99px;
+    background: var(--surface-strong);
+    border: 1px solid var(--border);
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.25s var(--motion-snappy), border-color 0.25s ease;
+  }
+  .sw .knob {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 22px;
+    height: 22px;
+    border-radius: 99px;
+    background: var(--panel);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.28s var(--motion-bounce);
+  }
+  .sw.on {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .sw.on .knob {
+    transform: translateX(18px);
+  }
+  .cb {
+    width: 24px;
+    height: 24px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border-strong);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    color: transparent;
+    background: var(--panel);
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease,
+      transform 0.28s var(--motion-bounce);
+  }
+  .cb-k {
+    font-size: 14px;
+    font-weight: 800;
+    transform: scale(0);
+    transition: transform 0.25s var(--motion-bounce);
+  }
+  .cb.on {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-fg);
+  }
+  .cb.on .cb-k {
+    transform: scale(1);
+  }
+  .sep {
+    height: 1px;
+    background: var(--border);
+    margin: 4px 0;
+  }
+
+  /* ---------- Slider ---------- */
+  .slider {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .slider-input {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    border-radius: 99px;
+    background: linear-gradient(
+      90deg,
+      var(--accent) 0%,
+      var(--accent) var(--p),
+      var(--surface-strong) var(--p),
+      var(--surface-strong) 100%
+    );
+    outline: none;
+    cursor: pointer;
+  }
+  .slider-input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 99px;
+    background: var(--panel);
+    border: 2px solid var(--accent);
+    box-shadow: var(--shadow-md);
+    cursor: grab;
+    transition: transform 0.2s var(--motion-bounce);
+  }
+  .slider-input::-webkit-slider-thumb:active {
+    cursor: grabbing;
+    transform: scale(1.15);
+  }
+  .slider-value {
+    min-width: 52px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-radius: 9px;
+    padding: 5px 8px;
+  }
+
+  /* ---------- Rating ---------- */
+  .stars {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+  }
+  .star {
+    font-size: 30px;
+    border: none;
+    background: transparent;
+    color: var(--surface-strong);
+    line-height: 1;
+    cursor: pointer;
+    transform: scale(1);
+    transition: color 0.15s ease, transform 0.28s var(--motion-bounce);
+  }
+  .star.on {
+    color: var(--accent);
+    animation: star-pop 0.35s var(--motion-bounce);
+  }
+  @keyframes star-pop {
+    0% { transform: scale(0.7) rotate(-12deg); }
+    60% { transform: scale(1.25) rotate(4deg); }
+    100% { transform: scale(1) rotate(0); }
+  }
+  .stars-hint {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--fg-secondary);
+  }
+
+  /* ---------- Stepper ---------- */
+  .step {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+  }
+  .step-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--surface-muted);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--fg);
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: transform 0.2s var(--motion-bounce), background-color 0.15s ease, border-color 0.15s ease;
+  }
+  .step-btn:hover {
+    background: var(--surface-strong);
+    border-color: var(--border-strong);
+  }
+  .step-btn:active {
+    transform: scale(0.9);
+  }
+  .step-val {
+    font-size: 26px;
+    font-weight: 800;
+    min-width: 44px;
+    text-align: center;
+    letter-spacing: -0.02em;
+  }
+
+  /* ---------- Segmented ---------- */
+  .seg {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    background: var(--surface-muted);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  .seg-btn {
+    flex: 1;
+    font: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--fg-tertiary);
+    border: none;
+    border-radius: 9px;
+    padding: 9px 10px;
+    background: transparent;
+    cursor: pointer;
+    transition: color 0.2s ease, background-color 0.25s var(--motion-snappy), box-shadow 0.25s ease;
+  }
+  .seg-btn.active {
+    background: var(--panel);
+    color: var(--fg);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* ---------- Chips ---------- */
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+  }
+  .chip {
+    font: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--fg-secondary);
+    background: var(--surface-muted);
+    border: 1px solid var(--border);
+    border-radius: 99px;
+    padding: 7px 14px;
+    cursor: pointer;
+    transition: all 0.22s var(--motion-snappy);
+  }
+  .chip:hover {
+    border-color: var(--border-strong);
+    color: var(--fg);
+  }
+  .chip.active {
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  }
+
+  /* ---------- Counter ---------- */
+  .count-btn {
+    font: inherit;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    border-radius: 14px;
+    padding: 14px 20px;
+    cursor: pointer;
+    text-align: center;
+    width: 100%;
+    transition: transform 0.25s var(--motion-bounce), box-shadow 0.2s ease;
+  }
+  .count-btn:hover {
+    box-shadow: var(--shadow-md);
+  }
+  .count-btn:active,
+  .count-btn.pop {
+    transform: scale(1.08);
+  }
+</style>

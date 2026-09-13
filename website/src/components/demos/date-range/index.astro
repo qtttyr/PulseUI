@@ -1,0 +1,133 @@
+---
+interface Props {
+  preview?: boolean;
+}
+const { preview = false } = Astro.props;
+---
+{
+  preview ? (
+    <div class="pv">
+      <span class="pv-grid"></span>
+      <span class="pv-glow"></span>
+      <div class="pv-scene col">
+        <div class="presets">
+          <span class="on">7 days</span>
+          <span>30 days</span>
+          <span>This month</span>
+        </div>
+        <div class="week">
+          {["M", "T", "W", "T", "F", "S", "S"].map((d) => (
+            <span class="dow">{d}</span>
+          ))}
+          {[1, 2, 3, 4, 5, 6, 7].map((d) => (
+            <span class="day" style={`--n:${d}`}>{d}</span>
+          ))}
+          <i class="range"></i>
+        </div>
+      </div>
+    </div>
+  ) : (
+    <>
+      <div class="dk-toolbar"><button class="dk-btn--micro" data-regen>regenerate month</button></div>
+      <div class="dk-stage dk-stage--top" style="justify-content: center">
+        <div class="dk-dr">
+          <div class="dk-dr-presets" data-presets>
+            {["Last 7 days", "Last 30 days", "This month", "This year"].map((p, pi) => (
+              <button class:list={["dk-dr-preset", pi === 0 && "is-on"]} data-preset>{p}</button>
+            ))}
+          </div>
+          <div class="dk-cal" data-cal data-month="0">
+            <div class="dk-cal-head">
+              <button data-cal-nav="-1" aria-label="previous">‹</button>
+              <span data-cal-title>March 2026</span>
+              <button data-cal-nav="1" aria-label="next">›</button>
+            </div>
+            <div class="dk-cal-grid">
+              {["M", "T", "W", "T", "F", "S", "S"].map((d) => (
+                <span class="dk-cal-d">{d}</span>
+              ))}
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31].map((n) => (
+                <button class="dk-cal-day" data-day={n}>{n}</button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
+<style>
+  .col {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .presets {
+    display: flex;
+    gap: 6px;
+  }
+  .presets span {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    padding: 4px 9px;
+    border-radius: 99px;
+    border: 1px solid var(--border);
+    color: var(--fg-tertiary);
+    animation: dr-slip 5.4s ease-in-out infinite;
+  }
+  .presets span.on {
+    background: var(--accent);
+    color: var(--accent-contrast);
+    border-color: transparent;
+  }
+  .presets span:nth-child(2) { animation-delay: 0.2s; }
+  .presets span:nth-child(3) { animation-delay: 0.4s; }
+  .week {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 3px;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 10px;
+    width: 214px;
+  }
+  .dow,
+  .day {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-variant-numeric: tabular-nums;
+  }
+  .dow {
+    color: var(--fg-tertiary);
+    font-family: var(--font-mono);
+    font-size: 8px;
+  }
+  .day {
+    position: relative;
+    color: var(--fg-secondary);
+    font-weight: 600;
+  }
+  .range {
+    position: absolute;
+    top: 10px;
+    height: 24px;
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--accent) 24%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    animation: dr-range 5.4s ease-in-out infinite;
+  }
+  @keyframes dr-slip {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.8; }
+    30%, 44% { transform: translateY(-3px); opacity: 1; }
+  }
+  @keyframes dr-range {
+    0%, 20% { left: 10px; width: 122px; }
+    46%, 70% { left: 34px; width: 98px; }
+    100% { left: 10px; width: 122px; }
+  }
+</style>

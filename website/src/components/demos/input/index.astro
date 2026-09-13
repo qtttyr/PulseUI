@@ -1,0 +1,109 @@
+---
+import IconBlock from "../../IconBlock.astro";
+
+interface Props {
+  preview?: boolean;
+}
+const { preview = false } = Astro.props;
+---
+{
+  preview ? (
+    <div class="pv">
+      <span class="pv-grid"></span>
+      <span class="pv-glow"></span>
+      <div class="pv-scene col">
+        <span class="lbl">Email</span>
+        <div class="fld ok">
+          <IconBlock name="mail" size={14} />
+          <span>you@example.com</span>
+        </div>
+        <div class="fld err">
+          <IconBlock name="lock" size={14} />
+          <span>10/26</span>
+        </div>
+        <span class="msg">This card expired</span>
+      </div>
+    </div>
+  ) : (
+    <div class="dk-stage" style="align-items: flex-start">
+      <div class="dk-input-wrap">
+        <label class="dk-input-label" for="dk-email">Email</label>
+        <div class="dk-input">
+          <IconBlock name="mail" size={16} />
+          <input id="dk-email" type="email" placeholder="you@example.com" />
+        </div>
+        <span class="dk-input-msg">We'll never share your email.</span>
+      </div>
+      <div class="dk-input-wrap">
+        <label class="dk-input-label" for="dk-pass">Card number</label>
+        <div class="dk-input dk-input--glass">
+          <IconBlock name="lock" size={16} />
+          <input id="dk-pass" type="password" placeholder="•••• •••• •••• 4242" value="4242 4242 4242 4242" />
+        </div>
+      </div>
+      <div class="dk-input-wrap">
+        <label class="dk-input-label" for="dk-exp">Expiry</label>
+        <div class="dk-input dk-input--error">
+          <input id="dk-exp" type="text" placeholder="MM/YY" value="10/26" />
+        </div>
+        <span class="dk-input-msg is-error">This card expired. Add a new one.</span>
+      </div>
+    </div>
+  )
+}
+<style>
+  .col {
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-start;
+    width: 246px;
+  }
+  .lbl {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--fg-secondary);
+  }
+  .fld {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    background: var(--panel-2);
+    font-size: 13px;
+    color: var(--fg-secondary);
+  }
+  .fld svg {
+    flex-shrink: 0;
+  }
+  .fld.ok {
+    animation: inp-focus 5.2s ease-in-out infinite;
+  }
+  .fld.err {
+    border-color: color-mix(in srgb, var(--error) 40%, transparent);
+    background: color-mix(in srgb, var(--error) 7%, var(--panel-2));
+    animation: inp-shake 5.2s ease-in-out infinite;
+  }
+  .msg {
+    font-size: 11px;
+    color: var(--error);
+    animation: inp-msg 5.2s ease-in-out infinite;
+  }
+  @keyframes inp-focus {
+    0%, 38% { border-color: var(--border); box-shadow: none; }
+    48% { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+    70% { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+    80%, 100% { border-color: var(--border); box-shadow: none; }
+  }
+  @keyframes inp-shake {
+    0%, 70%, 100% { transform: translateX(0); }
+    72%, 78%, 84%, 90% { transform: translateX(-3px); }
+    75%, 81%, 87% { transform: translateX(3px); }
+  }
+  @keyframes inp-msg {
+    0%, 70%, 100% { opacity: 0; }
+    75%, 90% { opacity: 1; }
+  }
+</style>

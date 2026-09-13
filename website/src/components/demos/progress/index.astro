@@ -1,0 +1,115 @@
+---
+interface Props {
+  preview?: boolean;
+}
+const { preview = false } = Astro.props;
+---
+{
+  preview ? (
+    <div class="pv">
+      <span class="pv-grid"></span>
+      <span class="pv-glow"></span>
+      <div class="pv-scene col">
+        <div class="lin">
+          <div class="lin-f"></div>
+        </div>
+        <div class="ring">
+          <svg viewBox="0 0 92 92">
+            <defs>
+              <linearGradient id="pvpg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="var(--accent)" />
+                <stop offset="100%" stop-color="var(--signal)" />
+              </linearGradient>
+            </defs>
+            <circle class="bg" cx="46" cy="46" r="36" />
+            <circle class="fg" cx="46" cy="46" r="36" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  ) : (
+    <>
+      <div class="dk-toolbar"><button class="dk-btn--micro" data-anim-replay>replay</button></div>
+      <div class="dk-stage dk-stage--col" data-anim style="max-width: 360px; gap: 20px">
+        <div class="dk-prog" data-prog data-val="68">
+          <div class="dk-prog-head"><span class="dk-prog-t">Uploading…</span><span class="dk-prog-v" data-prog-val>68%</span></div>
+          <div class="dk-prog-track"><div class="dk-prog-fill" data-prog-fill></div></div>
+        </div>
+        <div class="dk-prog" data-prog data-val="42">
+          <div class="dk-prog-head"><span class="dk-prog-t">Syncing</span><span class="dk-prog-v" data-prog-val>42%</span></div>
+          <div class="dk-prog-track"><div class="dk-prog-fill" data-prog-fill></div></div>
+        </div>
+        <div class="dk-prog dk-prog-indet">
+          <div class="dk-prog-head"><span class="dk-prog-t">Compressing…</span></div>
+          <div class="dk-prog-track"><div class="dk-prog-fill"></div></div>
+        </div>
+      </div>
+      <div class="dk-stage" data-anim>
+        <div style="position: relative">
+          <svg class="dk-prog-ring" style="--p: 60" viewBox="0 0 92 92">
+            <defs>
+              <linearGradient id="dkRingGrad-progress" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="var(--accent)" />
+                <stop offset="100%" stop-color="var(--signal)" />
+              </linearGradient>
+            </defs>
+            <circle class="ring-bg" cx="46" cy="46" r="36" />
+            <circle class="ring-fg" cx="46" cy="46" r="36" />
+          </svg>
+          <span class="dk-prog-ring-center">60%</span>
+        </div>
+      </div>
+    </>
+  )
+}
+<style>
+  .col {
+    flex-direction: column;
+    gap: 18px;
+  }
+  .lin {
+    width: 190px;
+    height: 8px;
+    border-radius: 99px;
+    background: var(--surface-strong);
+    overflow: hidden;
+    box-shadow: inset 0 0 0 1px var(--hair);
+  }
+  .lin-f {
+    width: 64%;
+    height: 100%;
+    border-radius: 99px;
+    background: linear-gradient(90deg, var(--accent), var(--signal));
+    animation: prg-fill 4.4s ease-in-out infinite;
+    box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+  .ring svg {
+    width: 86px;
+    height: 86px;
+    transform: rotate(-90deg);
+  }
+  .ring .bg,
+  .ring .fg {
+    fill: none;
+    stroke-width: 8;
+    stroke-linecap: round;
+  }
+  .ring .bg {
+    stroke: var(--surface-strong);
+  }
+  .ring .fg {
+    stroke: url(#pvpg);
+    stroke-dasharray: 226;
+    stroke-dashoffset: 90;
+    filter: drop-shadow(0 0 6px color-mix(in srgb, var(--accent) 50%, transparent));
+    animation: prg-ring 4.4s ease-in-out infinite;
+  }
+  @keyframes prg-fill {
+    0%, 100% { width: 20%; }
+    45%, 55% { width: 86%; }
+  }
+  @keyframes prg-ring {
+    0%, 100% { stroke-dashoffset: 170; }
+    45%, 55% { stroke-dashoffset: 66; }
+  }
+</style>

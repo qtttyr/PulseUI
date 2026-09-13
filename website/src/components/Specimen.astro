@@ -1,0 +1,90 @@
+---
+// Card tile: renders the adaptive preview scene of a component's demo.
+// The `preview` variant of each demos/<slug>/index.astro is a compact,
+// centered, auto-animating scene sized to the tile.
+import "../styles/demo.css";
+import DButton from "./demos/button/index.astro";
+import DBadge from "./demos/badge/index.astro";
+import DAvatar from "./demos/avatar/index.astro";
+import DLabel from "./demos/label/index.astro";
+import DCard from "./demos/card/index.astro";
+import DDivider from "./demos/divider/index.astro";
+import DSkeleton from "./demos/skeleton/index.astro";
+import DToggle from "./demos/toggle/index.astro";
+import DProgress from "./demos/progress/index.astro";
+import DAlert from "./demos/alert/index.astro";
+import DToast from "./demos/toast/index.astro";
+import DEmptyState from "./demos/empty-state/index.astro";
+import DSearch from "./demos/search/index.astro";
+import DChip from "./demos/chip/index.astro";
+import DRating from "./demos/rating/index.astro";
+import DCounter from "./demos/counter/index.astro";
+import DStepper from "./demos/stepper/index.astro";
+import DSlider from "./demos/slider/index.astro";
+import DOTP from "./demos/otp/index.astro";
+import DDateRange from "./demos/date-range/index.astro";
+import DList from "./demos/list/index.astro";
+import DInput from "./demos/input/index.astro";
+import DNavBar from "./demos/navigation-bar/index.astro";
+import DSidebar from "./demos/sidebar/index.astro";
+import DPicker from "./demos/picker/index.astro";
+import DAccordion from "./demos/accordion/index.astro";
+import DModal from "./demos/modal/index.astro";
+import DCarousel from "./demos/carousel/index.astro";
+import DTabBar from "./demos/tab-bar/index.astro";
+import DSheet from "./demos/sheet/index.astro";
+import DAdvanced from "./demos/advanced/index.astro";
+
+const PREVIEWS: Record<string, any> = {
+  button: DButton,
+  badge: DBadge,
+  avatar: DAvatar,
+  label: DLabel,
+  card: DCard,
+  divider: DDivider,
+  skeleton: DSkeleton,
+  toggle: DToggle,
+  progress: DProgress,
+  alert: DAlert,
+  toast: DToast,
+  "empty-state": DEmptyState,
+  search: DSearch,
+  chip: DChip,
+  rating: DRating,
+  counter: DCounter,
+  stepper: DStepper,
+  slider: DSlider,
+  otp: DOTP,
+  "date-range": DDateRange,
+  list: DList,
+  input: DInput,
+  "navigation-bar": DNavBar,
+  sidebar: DSidebar,
+  picker: DPicker,
+  accordion: DAccordion,
+  modal: DModal,
+  carousel: DCarousel,
+  "tab-bar": DTabBar,
+  sheet: DSheet,
+};
+const ADVANCED = new Set(["table", "chart", "command-palette", "segmented-control", "calendar", "form", "tooltip", "timeline", "kanban", "spotlight"]);
+
+interface Props {
+  slug: string;
+}
+const { slug } = Astro.props;
+const P = PREVIEWS[slug];
+---
+
+<div class="spec">
+  {ADVANCED.has(slug) ? <DAdvanced kind={slug} preview /> : P && <P preview />}
+</div>
+
+<style>
+  .spec {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+  }
+</style>

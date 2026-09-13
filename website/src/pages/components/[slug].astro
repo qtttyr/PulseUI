@@ -1,0 +1,626 @@
+---
+import Base from "../../layouts/Base.astro";
+import Demo from "../../components/Demo.astro";
+import { componentMap, components } from "../../data/components";
+import { readSwiftSource } from "../../lib/source";
+
+export function getStaticPaths() {
+  return components.map((c) => ({ params: { slug: c.slug } }));
+}
+
+const { slug } = Astro.params;
+const meta = componentMap[slug!];
+
+if (!meta) throw new Error(`Unknown component: ${slug}`);
+
+let sourceCode = "";
+try {
+  sourceCode = readSwiftSource(meta.sourceFile);
+} catch {
+  sourceCode = "";
+}
+
+const filesList = meta.sourceFile.split(",").map((s) => s.trim());
+---
+
+<Base
+  title={`${meta.name} — Pulse UI components`}
+  description={meta.description.slice(0, 150)}
+>
+  <section class="comp-head">
+    <div class="container">
+      <div class="bread">
+        <a href="/components/">Components</a>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg>
+        <span>{meta.name}</span>
+      </div>
+      <div class="head-row">
+        <div>
+          <h1>{meta.name}</h1>
+          <p class="tagline">{meta.tagline}</p>
+        </div>
+        <span class="cat-pill">{meta.category}</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="container comp-body">
+    <div class="left-col reveal">
+      <div class="preview" id="preview-panel">
+        <div class="preview-head">
+          <div class="dot-grp"><span></span><span></span><span></span></div>
+          <span class="preview-live"><i class="alive-dot"></i>interactive demo</span>
+          <div class="preview-actions">
+            <button type="button" class="pv-btn" data-skin-btn="light">Light</button>
+            <button type="button" class="pv-btn active" data-skin-btn="auto">Auto</button>
+            <button type="button" class="pv-btn" data-skin-btn="dark">Dark</button>
+          </div>
+        </div>
+        <div class="preview-stage" id="demo-stage" data-theme="auto">
+          <div class="demo-inner">
+            <Demo slugs={[meta.slug]} />
+          </div>
+        </div>
+        <p class="preview-note">
+          A live browser stand-in using the exact tokens, motion and API of
+          the SwiftUI component.
+        </p>
+      </div>
+
+      <div class="studiolink">
+        <span>Want all components at once?</span>
+        <a class="btn btn-accent btn-md" href="/studio/">
+          Open the studio
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="right-col">
+      <div class="content-card reveal">
+        <h2>{meta.tagline}</h2>
+        <p>{meta.description}</p>
+
+        <div class="feature-list">
+          {meta.features.map((f) => (
+            <div class="feat">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m20 6-11 11-5-5"/>
+              </svg>
+              <span>{f}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="code-card reveal">
+        <div class="code-head">
+          <span>Usage</span>
+          <button class="copy-btn" data-copy={meta.usage}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect width="14" height="14" x="8" y="8" rx="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+            Copy
+          </button>
+        </div>
+        <pre><code>{meta.usage}</code></pre>
+      </div>
+
+      <div class="code-card reveal">
+        <div class="code-head">
+          <span>Install</span>
+          <button class="copy-btn" data-copy={`$ pulse add ${meta.slug.replace(/-/g, "_")}`}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect width="14" height="14" x="8" y="8" rx="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+            Copy
+          </button>
+        </div>
+        <pre><code>{`$ pulse add ${meta.slug.replace(/-/g, "_")}`}</code></pre>
+      </div>
+
+      {
+        filesList.length > 0 && (
+          <div class="files-card reveal">
+            <h3>Source files</h3>
+            {filesList.map((f) => (
+              <div class="file-line">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m16 18 2 2 4-4" /><path d="M6 12 4 4 2 6" /><path d="M14 4h6a2 2 0 0 1 2 2v14" /></svg>
+                <span>{f}</span>
+              </div>
+            ))}
+          </div>
+        )
+      }
+
+      {
+        sourceCode.length > 8 && (
+          <details class="source-card reveal">
+            <summary>
+              <span>Full source</span>
+              <span class="src-file">{meta.sourceFile}</span>
+            </summary>
+            <pre><code>{sourceCode.replace(/\n$/, "")}</code></pre>
+          </details>
+        )
+      }
+
+      <div class="related reveal">
+        <h3>Related components</h3>
+        <div class="related-links">
+          {
+            components
+              .filter((c) => c.category === meta.category && c.slug !== meta.slug)
+              .slice(0, 4)
+              .map((c) => (
+                <a class="rel-card" href={`/components/${c.slug}/`}>
+                  <span>{c.name}</span>
+                  <span class="cat-pill">{c.category}</span>
+                </a>
+              ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline>
+    const stage = document.getElementById("demo-stage");
+
+    function applySkin(kind) {
+      const light = window.matchMedia("(prefers-color-scheme: light)").matches;
+      stage.dataset.theme = kind === "auto" ? (light ? "light" : "dark") : kind;
+    }
+
+    document.querySelectorAll("[data-skin-btn]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("[data-skin-btn]").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        applySkin(btn.dataset.skinBtn);
+      });
+    });
+    applySkin("auto");
+
+    document.querySelectorAll(".copy-btn").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        await navigator.clipboard.writeText(btn.dataset.copy);
+        const html = btn.innerHTML;
+        btn.innerHTML = "Copied!";
+        setTimeout(() => (btn.innerHTML = html), 1800);
+      });
+    });
+
+    const io = new IntersectionObserver(
+      (obs) => obs.forEach((e) => e.isIntersecting && e.target.classList.add("is-visible")),
+      { threshold: 0.1 }
+    );
+    document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+  </script>
+</Base>
+
+<style>
+  .comp-head {
+    padding: clamp(32px, 5vh, 48px) 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .bread {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--fg-tertiary);
+  }
+  .bread a {
+    color: var(--fg-secondary);
+    transition: color 0.15s ease;
+  }
+  .bread a:hover {
+    color: var(--fg);
+  }
+
+  .head-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+  }
+
+  .head-row h1 {
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+
+  .tagline {
+    margin-top: 6px;
+    color: var(--fg-secondary);
+    font-size: 1.05rem;
+  }
+
+  .cat-pill {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--fg-secondary);
+    background: var(--surface-muted);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .comp-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: clamp(20px, 3vw, 36px);
+    align-items: start;
+    padding-block: clamp(24px, 4vh, 48px);
+  }
+
+  @media (max-width: 960px) {
+    .comp-body {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .left-col {
+    min-width: 0;
+    position: sticky;
+    top: calc(var(--nav-h) + 16px);
+  }
+  @media (max-width: 960px) {
+    .left-col {
+      position: static;
+    }
+  }
+
+  .preview {
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-xl);
+    background: var(--panel);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+  }
+
+  .preview-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .dot-grp {
+    display: flex;
+    gap: 6px;
+  }
+  .dot-grp span {
+    width: 10px;
+    height: 10px;
+    border-radius: 99px;
+    background: var(--surface-muted);
+    border: 1px solid var(--border);
+  }
+  .dot-grp span:first-child {
+    background: var(--error);
+    border-color: var(--error);
+  }
+  .dot-grp span:nth-child(2) {
+    background: var(--warning);
+    border-color: var(--warning);
+  }
+  .dot-grp span:last-child {
+    background: var(--success);
+    border-color: var(--success);
+  }
+
+  .preview-live {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--fg-tertiary);
+  }
+
+  .preview-actions {
+    display: flex;
+    gap: 2px;
+    background: var(--surface-muted);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 2px;
+  }
+
+  .pv-btn {
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--fg-tertiary);
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    padding: 5px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .pv-btn:hover {
+    color: var(--fg-secondary);
+  }
+
+  .pv-btn.active {
+    background: var(--panel);
+    color: var(--fg);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .preview-stage {
+    min-height: 400px;
+    display: grid;
+    place-items: center;
+    padding: clamp(20px, 4vh, 40px);
+    overflow: hidden;
+    transition: background-color 0.35s ease;
+  }
+
+  /* re-skin only the demo stage: tokens flip on [data-theme] */
+  .preview-stage[data-theme] {
+    background: var(--bg);
+  }
+  .preview-stage[data-theme="light"] {
+    --bg: #f1eee6;
+    --bg-soft: #e8e4da;
+    --panel: #fffdf8;
+    --surface-muted: #eeeae0;
+    --surface-strong: #d9d4c8;
+    --border: rgba(28, 31, 30, 0.12);
+    --border-strong: rgba(28, 31, 30, 0.22);
+    --fg: #1c1f1e;
+    --fg-secondary: #454a47;
+    --fg-tertiary: #7a7f7b;
+    --accent: #9aca00;
+    --accent-ink: #547a00;
+    --accent-contrast: #10150a;
+    --glass-bg: rgba(255, 253, 248, 0.62);
+  }
+  .preview-stage[data-theme="dark"] {
+    background: var(--bg);
+  }
+
+  .demo-inner {
+    width: 100%;
+    max-width: 620px;
+  }
+
+  .preview-note {
+    padding: 10px 16px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--fg-tertiary);
+  }
+
+  .studiolink {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 16px 18px;
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--radius-lg);
+    background: color-mix(in srgb, var(--accent) 6%, transparent);
+  }
+  .studiolink > span {
+    font-size: 14px;
+    color: var(--fg-secondary);
+  }
+
+  .right-col {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .content-card {
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: var(--panel);
+    padding: 24px;
+  }
+
+  .content-card h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+  }
+
+  .content-card > p {
+    margin-top: 10px;
+    color: var(--fg-secondary);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  .feature-list {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .feat {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--fg-secondary);
+  }
+
+  .code-card {
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--panel) 60%, transparent);
+    overflow: hidden;
+  }
+
+  .code-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--fg-secondary);
+  }
+
+  .code-card pre {
+    margin: 0;
+    padding: 16px;
+    overflow-x: auto;
+    font-size: 13.5px;
+    line-height: 1.7;
+  }
+
+  .copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--fg-secondary);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+  }
+  .copy-btn:hover {
+    color: var(--fg);
+    border-color: var(--fg-secondary);
+  }
+
+  .files-card {
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: var(--panel);
+    padding: 16px 18px;
+  }
+
+  .files-card h3 {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  .file-line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--fg-secondary);
+    padding: 4px 0;
+  }
+  .file-line span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .related h3 {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  .related-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .rel-card {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--fg-secondary);
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+  }
+  .rel-card:hover {
+    color: var(--fg);
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+
+  .source-card {
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--panel) 60%, transparent);
+    overflow: hidden;
+  }
+
+  .source-card summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 18px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    list-style: none;
+    user-select: none;
+    transition: color 0.15s ease;
+  }
+
+  .source-card summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .source-card summary:hover {
+    color: var(--accent);
+  }
+
+  .source-card summary::before {
+    content: "▸";
+    font-size: 12px;
+    color: var(--fg-tertiary);
+    margin-right: 2px;
+    transition: transform 0.2s ease;
+  }
+
+  .source-card[open] summary::before {
+    transform: rotate(90deg);
+  }
+
+  .src-file {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    font-weight: 400;
+    color: var(--fg-tertiary);
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .source-card pre {
+    margin: 0;
+    padding: 16px 18px;
+    border-top: 1px solid var(--border);
+    overflow-x: auto;
+    font-size: 12.5px;
+    line-height: 1.7;
+    max-height: 480px;
+    overflow-y: auto;
+  }
+</style>

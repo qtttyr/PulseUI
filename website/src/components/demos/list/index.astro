@@ -1,0 +1,125 @@
+---
+import IconBlock from "../../IconBlock.astro";
+
+interface Props {
+  preview?: boolean;
+}
+const { preview = false } = Astro.props;
+---
+{
+  preview ? (
+    <div class="pv">
+      <span class="pv-grid"></span>
+      <span class="pv-glow"></span>
+      <div class="pv-scene">
+        <div class="lst">
+          <span class="row">
+            <i class="ic ok"><IconBlock name="wifi" size={13} /></i>
+            <span class="tx"><b>Wi-Fi</b><span>Connected</span></span>
+            <IconBlock name="chevron" size={13} />
+          </span>
+          <span class="row">
+            <i class="ic w"><IconBlock name="bluetooth" size={13} /></i>
+            <span class="tx"><b>Bluetooth</b><span>AirPods Pro</span></span>
+            <IconBlock name="chevron" size={13} />
+          </span>
+          <span class="row">
+            <i class="ic e"><IconBlock name="shield" size={13} /></i>
+            <span class="tx"><b>Security</b></span>
+            <span class="tag">ON</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  ) : (
+    <div class="dk-stage">
+      <div class="dk-list">
+        <div class="dk-list-sec">Connections</div>
+        <div class="dk-list-row">
+          <span class="dk-list-icon dk-list-icon--success"><IconBlock name="wifi" size={15} /></span>
+          <div class="dk-list-txt"><span class="dk-list-t">Wi-Fi</span><span class="dk-list-s">Home Network — Connected</span></div>
+          <IconBlock name="chevron" size={15} />
+        </div>
+        <div class="dk-list-row">
+          <span class="dk-list-icon dk-list-icon--warning"><IconBlock name="bluetooth" size={15} /></span>
+          <div class="dk-list-txt"><span class="dk-list-t">Bluetooth</span><span class="dk-list-s">AirPods Pro</span></div>
+          <IconBlock name="chevron" size={15} />
+        </div>
+        <div class="dk-list-sec">About</div>
+        <div class="dk-list-row">
+          <span class="dk-list-icon"><IconBlock name="shield" size={15} /></span>
+          <div class="dk-list-txt"><span class="dk-list-t">Privacy &amp; Security</span></div>
+          <IconBlock name="chevron" size={15} />
+        </div>
+        <div class="dk-list-row">
+          <span class="dk-list-icon dk-list-icon--error"><IconBlock name="drop" size={15} /></span>
+          <div class="dk-list-txt"><span class="dk-list-t">Storage</span></div>
+          <span style="font-family: var(--font-mono); font-size: 12px; color: var(--fg-tertiary)">92%</span>
+        </div>
+      </div>
+    </div>
+  )
+}
+<style>
+  .lst {
+    width: 232px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: color-mix(in srgb, var(--panel) 92%, transparent);
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 10px 13px;
+    border-bottom: 1px solid var(--hair);
+    color: var(--fg-tertiary);
+    opacity: 0;
+    transform: translateX(-8px);
+    animation: lst-in 4.8s ease-in-out infinite;
+  }
+  .row:last-child { border-bottom: 0; }
+  .row:nth-child(2) { animation-delay: 0.5s; }
+  .row:nth-child(3) { animation-delay: 1s; }
+  .ic {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+    flex-shrink: 0;
+    color: var(--fg-secondary);
+    background: var(--surface-muted);
+  }
+  .ic.ok { background: color-mix(in srgb, var(--success) 16%, transparent); color: var(--success); }
+  .ic.w { background: color-mix(in srgb, var(--warning) 16%, transparent); color: var(--warning); }
+  .ic.e { background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--accent-ink); }
+  .tx {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  .tx b {
+    font-size: 13px;
+    color: var(--fg);
+  }
+  .tx span {
+    font-size: 11px;
+    color: var(--fg-tertiary);
+  }
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    padding: 3px 7px;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--success) 18%, transparent);
+    color: var(--success);
+  }
+  @keyframes lst-in {
+    0%, 12%, 100% { opacity: 0; transform: translateX(-8px); }
+    22%, 78% { opacity: 1; transform: translateX(0); }
+  }
+</style>

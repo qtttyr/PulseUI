@@ -1,0 +1,117 @@
+---
+import IconBlock from "../../IconBlock.astro";
+
+interface Props {
+  preview?: boolean;
+}
+const { preview = false } = Astro.props;
+---
+{
+  preview ? (
+    <div class="pv">
+      <span class="pv-grid"></span>
+      <span class="pv-glow"></span>
+      <div class="pv-scene col">
+        <span class="sw">
+          <span class="kn"></span>
+        </span>
+        <span class="ck">
+          <IconBlock name="check" size={13} />
+        </span>
+        <span class="pill">
+          <IconBlock name="bell" size={11} /> Notify
+        </span>
+      </div>
+    </div>
+  ) : (
+    <div class="dk-stage dk-stage--col" style="max-width: 360px; gap: 18px">
+      <div class="dk-tgrow">
+        <div class="dk-tgrow-l"><span class="dk-tgrow-t">Airplane Mode</span><span class="dk-tgrow-s">Fly without flying.</span></div>
+        <span class="dk-tg-switch" data-tg><span class="dk-knob"></span></span>
+      </div>
+      <div class="dk-tgrow">
+        <div class="dk-tgrow-l"><span class="dk-tgrow-t">Bluetooth</span><span class="dk-tgrow-s">2 devices connected</span></div>
+        <span class="dk-tg-switch is-on" data-tg><span class="dk-knob"></span></span>
+      </div>
+      <div class="dk-tgrow">
+        <div class="dk-tgrow-l"><span class="dk-tgrow-t">Notifications</span><span class="dk-tgrow-s">Badge style</span></div>
+        <span class="dk-tg-pill is-on" data-tg><IconBlock name="bell" size={13} /> On</span>
+      </div>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center">
+        <span class="dk-tg-check" data-tg>
+          <svg class="dk-check-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 7"/></svg>
+        </span>
+        <span class="dk-tg-check is-on" data-tg>
+          <svg class="dk-check-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 7"/></svg>
+        </span>
+        <span class="dk-tg-switch dk-tg-switch--sm is-on" data-tg><span class="dk-knob"></span></span>
+      </div>
+    </div>
+  )
+}
+<style>
+  .col {
+    flex-direction: column;
+    gap: 14px;
+  }
+  .sw {
+    position: relative;
+    width: 54px;
+    height: 32px;
+    border-radius: 99px;
+    background: var(--surface-strong);
+    border: 1px solid var(--border-strong);
+    animation: tg-flip 4.6s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+  }
+  .sw .kn {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--fg);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    animation: tg-knob 4.6s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+  }
+  .ck {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    border: 2px solid var(--border-strong);
+    color: transparent;
+    animation: tg-check 4.6s ease infinite;
+  }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: 99px;
+    border: 1px solid var(--border);
+    color: var(--fg-secondary);
+    background: var(--panel-2);
+    animation: pv-pop 4.6s ease-in-out infinite;
+  }
+  @keyframes tg-flip {
+    0%, 18% { background: var(--surface-strong); }
+    24%, 60% { background: var(--accent); }
+    66%, 100% { background: var(--surface-strong); }
+  }
+  @keyframes tg-knob {
+    0%, 18% { transform: translateX(0); }
+    24%, 60% { transform: translateX(22px); }
+    66%, 100% { transform: translateX(0); }
+  }
+  @keyframes tg-check {
+    0%, 18% { color: transparent; background: transparent; border-color: var(--border-strong); }
+    26%, 60% { color: var(--accent-contrast); background: var(--accent); border-color: var(--accent); }
+    66%, 100% { color: transparent; background: transparent; border-color: var(--border-strong); }
+  }
+</style>

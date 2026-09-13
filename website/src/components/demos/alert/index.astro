@@ -1,0 +1,110 @@
+---
+import IconBlock from "../../IconBlock.astro";
+
+interface Props {
+  preview?: boolean;
+}
+const { preview = false } = Astro.props;
+---
+{
+  preview ? (
+    <div class="pv">
+      <span class="pv-grid"></span>
+      <span class="pv-glow"></span>
+      <div class="pv-scene">
+        <div class="al">
+          <span class="ic">
+            <IconBlock name="check" size={17} />
+            <i class="pop"></i>
+          </span>
+          <div class="txt">
+            <b>Saved</b>
+            <span>Synced to all devices</span>
+          </div>
+          <span class="x">×</span>
+        </div>
+      </div>
+    </div>
+  ) : (
+    <div class="dk-stage dk-stage--col" style="max-width: 460px; gap: 14px">
+      <div class="dk-alert dk-alert--success dk-alert--pulse">
+        <span class="dk-alert-ic"><IconBlock name="check" size={18} /></span>
+        <div class="dk-alert-txt"><span class="dk-alert-t">Saved</span><span class="dk-alert-m">Your changes are synced to all devices.</span></div>
+        <button class="dk-alert-x" data-alert-x aria-label="Dismiss">×</button>
+      </div>
+      <div class="dk-alert dk-alert--info">
+        <span class="dk-alert-ic"><IconBlock name="bell" size={18} /></span>
+        <div class="dk-alert-txt"><span class="dk-alert-t">Heads up</span><span class="dk-alert-m">A new update is available. It takes 2 minutes to install.</span></div>
+        <button class="dk-alert-x" data-alert-x aria-label="Dismiss">×</button>
+      </div>
+      <div class="dk-alert dk-alert--warning">
+        <span class="dk-alert-ic"><IconBlock name="flame" size={18} /></span>
+        <div class="dk-alert-txt"><span class="dk-alert-t">Storage almost full</span><span class="dk-alert-m">You are using 92% of your plan.</span></div>
+        <button class="dk-alert-x" data-alert-x aria-label="Dismiss">×</button>
+      </div>
+      <div class="dk-alert dk-alert--error">
+        <span class="dk-alert-ic"><IconBlock name="x" size={18} /></span>
+        <div class="dk-alert-txt"><span class="dk-alert-t">Connection lost</span><span class="dk-alert-m">Check your network and try again.</span></div>
+        <button class="dk-alert-x" data-alert-x aria-label="Dismiss">×</button>
+      </div>
+    </div>
+  )
+}
+<style>
+  .al {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 262px;
+    padding: 14px 16px;
+    border-radius: var(--radius-lg);
+    border: 1px solid color-mix(in srgb, var(--success) 30%, transparent);
+    background: linear-gradient(120deg, color-mix(in srgb, var(--success) 14%, var(--panel)), color-mix(in srgb, var(--accent) 8%, var(--panel)));
+    animation: al-slide 5.6s ease-in-out infinite;
+  }
+  .ic {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: var(--success);
+    color: #06130a;
+    box-shadow: 0 0 22px color-mix(in srgb, var(--success) 55%, transparent);
+  }
+  .ic .pop {
+    position: absolute;
+    inset: 0;
+    border-radius: 10px;
+    border: 2px solid var(--success);
+    animation: al-ring 2.6s ease-out infinite;
+  }
+  .txt {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+  }
+  .txt b {
+    font-size: 13px;
+  }
+  .txt span {
+    font-size: 11px;
+    color: var(--fg-secondary);
+  }
+  .x {
+    color: var(--fg-tertiary);
+    font-size: 16px;
+  }
+  @keyframes al-slide {
+    0%, 12% { opacity: 0; transform: translateX(26px); }
+    20%, 76% { opacity: 1; transform: translateX(0); }
+    88%, 100% { opacity: 0; transform: translateX(-26px); }
+  }
+  @keyframes al-ring {
+    0% { transform: scale(0.8); opacity: 0.9; }
+    60%, 100% { transform: scale(1.7); opacity: 0; }
+  }
+</style>

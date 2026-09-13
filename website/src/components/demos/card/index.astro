@@ -1,0 +1,121 @@
+---
+import IconBlock from "../../IconBlock.astro";
+
+interface Props {
+  preview?: boolean;
+}
+const { preview = false } = Astro.props;
+---
+{
+  preview ? (
+    <div class="pv">
+      <span class="pv-grid"></span>
+      <span class="pv-glow"></span>
+      <div class="pv-scene">
+        <div class="cfloat">
+          <span class="lbl">Revenue</span>
+          <b>$42.9k</b>
+          <span class="trend"><IconBlock name="arrow" size={11} /> 12.4%</span>
+        </div>
+        <div class="cback">
+          <span class="lbl">Sessions</span>
+          <b>22.1k</b>
+        </div>
+      </div>
+    </div>
+  ) : (
+    <div class="dk-stage" style="align-items: stretch">
+      <div class="dk-card dk-card--elevated dk-card--pressable">
+        <span class="dk-card-t">Revenue</span>
+        <span class="dk-card-v">$42.9k</span>
+        <span class="dk-card-sub">+12.4% this month</span>
+      </div>
+      <div class="dk-card dk-card--gradient dk-card--pressable">
+        <span class="dk-card-t">Premium</span>
+        <span class="dk-card-v">Pro</span>
+        <span class="dk-card-sub">accent → signal</span>
+      </div>
+      <div class="dk-card dk-card--gb">
+        <span class="dk-card-t">Gradient border</span>
+        <span class="dk-card-v">1px</span>
+        <span class="dk-card-sub">masked edge</span>
+      </div>
+      <div class="dk-card dk-card--glass">
+        <span class="dk-card-t">Glass</span>
+        <span class="dk-card-v">17°</span>
+        <span class="dk-card-sub">translucent + blur</span>
+      </div>
+      <div class="dk-card dk-card--outlined">
+        <span class="dk-card-t">Outlined</span>
+        <span class="dk-card-v">2,481</span>
+        <span class="dk-card-sub">hairline card</span>
+      </div>
+      <div class="dk-card dk-card--filled">
+        <span class="dk-card-t">Filled</span>
+        <span class="dk-card-v">96%</span>
+        <span class="dk-card-sub">muted surface</span>
+      </div>
+      <div class="dk-card dk-card--floating dk-card--pressable">
+        <span class="dk-card-t">Floating</span>
+        <span class="dk-card-v">Float</span>
+        <span class="dk-card-sub">ambient shadow</span>
+      </div>
+    </div>
+  )
+}
+<style>
+  .cfloat,
+  .cback {
+    width: 138px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--panel) 92%, transparent);
+    box-shadow: var(--shadow-md);
+    backdrop-filter: blur(10px);
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .cfloat {
+    background: linear-gradient(135deg, var(--accent), var(--signal));
+    border-color: transparent;
+    color: #07110a;
+    transform: rotate(-4deg);
+    animation: pv-float 4.6s ease-in-out infinite;
+    box-shadow: 0 16px 34px color-mix(in srgb, var(--accent) 36%, transparent);
+  }
+  .cback {
+    margin-left: -34px;
+    transform: translateY(18px) rotate(5deg);
+    animation: pv-float 4.6s ease-in-out infinite reverse;
+    animation-delay: 0.5s;
+  }
+  .lbl {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.75;
+  }
+  .cfloat b,
+  .cback b {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .trend {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+  }
+  .dk-card--pressable {
+    cursor: pointer;
+  }
+  .dk-card--pressable:active {
+    transform: scale(0.97);
+  }
+</style>

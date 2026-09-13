@@ -1,0 +1,74 @@
+---
+import IconBlock from "../../IconBlock.astro";
+
+interface Props {
+  preview?: boolean;
+}
+const { preview = false } = Astro.props;
+---
+{
+  preview ? (
+    <div class="pv">
+      <span class="pv-grid"></span>
+      <span class="pv-glow"></span>
+      <div class="pv-scene">
+        <div class="fld">
+          <IconBlock name="search" size={15} />
+          <span class="ph">Search people, projects…<i class="caret"></i></span>
+          <kbd>⌘K</kbd>
+        </div>
+      </div>
+    </div>
+  ) : (
+    <div class="dk-stage dk-stage--col" style="max-width: 360px; gap: 14px">
+      <div class="dk-search">
+        <IconBlock name="search" size={17} />
+        <input type="text" placeholder="Search people, projects…" data-focusable />
+        <kbd class="dk-note" style="font-family: var(--font-mono); font-size: 11px; border: 1px solid var(--border); padding: 2px 6px; border-radius: 5px">⌘K</kbd>
+      </div>
+      <div class="dk-search dk-search--glass">
+        <IconBlock name="search" size={17} />
+        <input type="text" placeholder="Glass field" data-focusable />
+      </div>
+      <span class="dk-note" style="text-align: center; margin-top: 4px">click a field — focus glow is token-driven</span>
+    </div>
+  )
+}
+<style>
+  .fld {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    width: 256px;
+    padding: 11px 13px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: var(--panel-2);
+    color: var(--fg-tertiary);
+    animation: sr-glow 3.8s ease-in-out infinite;
+  }
+  .fld svg {
+    color: var(--fg-secondary);
+    flex-shrink: 0;
+  }
+  .ph {
+    flex: 1;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  kbd {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 2px 6px;
+    color: var(--fg-secondary);
+  }
+  @keyframes sr-glow {
+    0%, 38% { border-color: var(--border); box-shadow: none; }
+    44% { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+    60% { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+    68%, 100% { border-color: var(--border); box-shadow: none; }
+  }
+</style>

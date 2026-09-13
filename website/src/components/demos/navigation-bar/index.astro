@@ -1,0 +1,128 @@
+---
+import IconBlock from "../../IconBlock.astro";
+
+interface Props {
+  preview?: boolean;
+}
+const { preview = false } = Astro.props;
+---
+{
+  preview ? (
+    <div class="pv" style="place-items:start center; padding-top:30px">
+      <span class="pv-grid"></span>
+      <span class="pv-glow"></span>
+      <div class="pv-scene">
+        <div class="bar">
+          <div class="til">
+            <b>Discover</b>
+            <span>
+              <IconBlock name="sun" size={13} /> Clear
+              <em>38°</em>
+            </span>
+          </div>
+          <div class="acts">
+            <span class="live">Live</span>
+            <span class="av">AR</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  ) : (
+    <div class="dk-stage" style="min-height: 170px">
+      <div class="dk-navbar">
+        <div class="dk-navbar-txt">
+          <span class="dk-navbar-t">Discover</span>
+          <span class="dk-navbar-s">
+            <span class="dk-weather">
+              <IconBlock name="sun" size={14} /> Clear
+            </span>
+            <span class="dk-temp">38°</span>
+          </span>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center">
+          <span class="dk-badge dk-badge--accent dk-badge--subtle">Live <i class="dk-pulse-dot"></i></span>
+          <span class="dk-av dk-av--sm">AR</span>
+        </div>
+      </div>
+    </div>
+  )
+}
+<style>
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    width: 300px;
+    padding: 16px 20px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--hair);
+    background: color-mix(in srgb, var(--panel) 72%, transparent);
+    backdrop-filter: blur(14px);
+    animation: nb-bob 4.6s ease-in-out infinite;
+  }
+  .til {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .til b {
+    font-size: 21px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .til span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--fg-secondary);
+  }
+  .til em {
+    font-style: normal;
+    color: var(--fg);
+    font-weight: 700;
+  }
+  .acts {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .live {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 5px 10px;
+    border-radius: 99px;
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    color: var(--accent-ink);
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  }
+  .live::before {
+    content: "";
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pv-blink 1.6s ease infinite;
+  }
+  .av {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 12px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), var(--signal));
+    color: #07110a;
+  }
+  @keyframes nb-bob {
+    0%, 100% { transform: translateY(0); box-shadow: 0 10px 30px color-mix(in srgb, var(--bg) 30%, transparent); }
+    50% { transform: translateY(-3px); }
+  }
+</style>

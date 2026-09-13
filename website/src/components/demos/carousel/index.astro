@@ -1,0 +1,126 @@
+---
+import IconBlock from "../../IconBlock.astro";
+
+interface Props {
+  preview?: boolean;
+}
+const { preview = false } = Astro.props;
+---
+{
+  preview ? (
+    <div class="pv" style="place-items:start center; padding-top:30px">
+      <span class="pv-grid"></span>
+      <span class="pv-glow"></span>
+      <div class="pv-scene colx">
+        <div class="track">
+          <div class="c c1"><b>01</b><span>Meet the tokens</span></div>
+          <div class="c c2"><b>02</b><span>Light &amp; dark</span></div>
+          <div class="c c3"><b>03</b><span>Springs</span></div>
+        </div>
+        <div class="bars">
+          <i class="on"></i><i></i><i></i>
+        </div>
+      </div>
+    </div>
+  ) : (
+    <div class="dk-stage dk-stage--col" style="min-height: 280px">
+      <div class="dk-car" data-car>
+        <div class="dk-car-track" data-car-track>
+          <div class="dk-car-card">
+            <span class="dk-car-idx">01 / ONBOARDING</span>
+            <span class="dk-type dk-type--title3">Meet the tokens</span>
+            <span class="dk-type dk-type--callout">One accent. Every component re-skins.</span>
+          </div>
+          <div class="dk-car-card">
+            <span class="dk-car-idx">02 / THEME</span>
+            <span class="dk-type dk-type--title3">Swap light &amp; dark</span>
+            <span class="dk-type dk-type--callout">Two themes from one structure.</span>
+          </div>
+          <div class="dk-car-card">
+            <span class="dk-car-idx">03 / MOTION</span>
+            <span class="dk-type dk-type--title3">Springs everywhere</span>
+            <span class="dk-type dk-type--callout">Feel the bounce on every tap.</span>
+          </div>
+          <div class="dk-car-card">
+            <span class="dk-car-idx">04 / SHIP</span>
+            <span class="dk-type dk-type--title3">Copy into your app</span>
+            <span class="dk-type dk-type--callout">Real SwiftUI, ready to paste.</span>
+          </div>
+        </div>
+        <div class="dk-car-bars" data-car-bars>
+          <span class="dk-car-bar is-on" data-car-bar="0"></span>
+          <span class="dk-car-bar" data-car-bar="1"></span>
+          <span class="dk-car-bar" data-car-bar="2"></span>
+          <span class="dk-car-bar" data-car-bar="3"></span>
+        </div>
+      </div>
+    </div>
+  )
+}
+<style>
+  .colx {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .track {
+    position: relative;
+    width: 236px;
+    height: 92px;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+  }
+  .c {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-lg);
+    padding: 15px 17px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 22%, var(--panel)), color-mix(in srgb, var(--signal) 14%, var(--panel)));
+    border: 1px solid var(--border);
+    animation: car-slide 7s ease-in-out infinite;
+  }
+  .c b {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: var(--accent-ink);
+  }
+  .c span {
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .c2 {
+    animation-delay: 2.33s;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--signal) 26%, var(--panel)), color-mix(in srgb, var(--info) 12%, var(--panel)));
+  }
+  .c3 {
+    animation-delay: 4.66s;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--fg-secondary) 18%, var(--panel)), color-mix(in srgb, var(--accent) 12%, var(--panel)));
+  }
+  .bars {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+  }
+  .bars i {
+    width: 18px;
+    height: 4px;
+    border-radius: 99px;
+    background: var(--surface-strong);
+    animation: car-bars 7s ease-in-out infinite;
+  }
+  .bars i.on { background: var(--accent); }
+  .bars i:nth-child(2) { animation-delay: 2.33s; }
+  .bars i:nth-child(3) { animation-delay: 4.66s; }
+  @keyframes car-slide {
+    0%, 8%, 25%, 100% { opacity: 0; transform: translateX(60%); }
+    12%, 20% { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes car-bars {
+    0%, 8%, 25%, 100% { transform: scaleX(0.6); opacity: 0.5; }
+    12%, 20% { transform: scaleX(1); opacity: 1; background: var(--accent); }
+  }
+</style>

@@ -1,0 +1,68 @@
+---
+interface Props { kind: string; preview?: boolean }
+const { kind, preview = false } = Astro.props;
+const compact = preview ? " advanced-preview" : "";
+---
+
+<div class={`advanced-demo ${compact}`} data-advanced={kind}>
+  {kind === "table" && (
+    <div class="adv-table">
+      <div class="adv-table-head"><span>Project</span><span>Status</span><span>Progress</span></div>
+      <div class="adv-row"><b>Design system</b><span class="adv-status live">Live</span><span>98%</span></div>
+      <div class="adv-row"><b>iOS release</b><span class="adv-status review">Review</span><span>84%</span></div>
+      <div class="adv-row"><b>Marketing site</b><span class="adv-status draft">Draft</span><span>62%</span></div>
+    </div>
+  )}
+  {kind === "chart" && (
+    <div class="adv-chart">
+      <div class="chart-label"><span>Revenue</span><b>$128K</b><i>+12.4%</i></div>
+      <svg viewBox="0 0 520 150" preserveAspectRatio="none" aria-label="Revenue trend">
+        <defs><linearGradient id={`chart-fill-${kind}`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--accent)" stop-opacity=".34"/><stop offset="1" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs>
+        <path class="chart-area" d="M0 122 C54 108 66 98 110 104 S166 72 214 84 S268 42 316 65 S374 30 420 48 S470 20 520 28 V150 H0Z"/>
+        <path class="chart-line" d="M0 122 C54 108 66 98 110 104 S166 72 214 84 S268 42 316 65 S374 30 420 48 S470 20 520 28"/>
+      </svg>
+    </div>
+  )}
+  {kind === "command-palette" && (
+    <div class="adv-command"><div class="adv-search"><span class="adv-search-icon"></span><span>Search commands</span><kbd>⌘ K</kbd></div><div class="adv-command-row"><i>+</i><b>New project</b><span>Enter</span></div><div class="adv-command-row"><i>◎</i><b>Open settings</b></div></div>
+  )}
+  {kind === "segmented-control" && (
+    <div class="adv-segment"><span class="is-on">Overview</span><span>Activity</span><span>Insights</span></div>
+  )}
+  {kind === "calendar" && (
+    <div class="adv-calendar"><header><b>September 2026</b><span>‹　›</span></header><div class="cal-week">{["M","T","W","T","F","S","S"].map((d) => <i>{d}</i>)}</div><div class="cal-days">{Array.from({ length: 28 }, (_, i) => <span class:list={[i === 14 && "is-on"]}>{i + 1}</span>)}</div></div>
+  )}
+  {kind === "form" && (
+    <div class="adv-form"><label>Email<input value="you@example.com" /></label><label>Workspace<input value="Pulse Studio" /></label><button>Continue <span>→</span></button></div>
+  )}
+  {kind === "tooltip" && (
+    <div class="adv-tooltip"><button>i</button><div><b>Contextual help</b><span>Short, useful, never in the way.</span></div></div>
+  )}
+  {kind === "timeline" && (
+    <div class="adv-timeline"><div><i>✓</i><b>Published</b><small>Now</small><span>The release is live.</span></div><div><i>◌</i><b>Reviewed</b><small>2h</small><span>Design QA approved.</span></div><div><i>+</i><b>Created</b><small>Yesterday</small><span>Workspace initialized.</span></div></div>
+  )}
+  {kind === "kanban" && (
+    <div class="adv-kanban"><div><header>Todo <small>2</small></header><article><b>Token audit</b><span>Design</span></article><article><b>Write docs</b><span>Content</span></article></div><div><header>In progress <small>1</small></header><article><b>Chart polish</b><span>Engineering</span></article></div></div>
+  )}
+  {kind === "spotlight" && (
+    <div class="adv-spotlight"><small>PULSEUI 1.0</small><h3>Build momentum.</h3><p>A native design language for ambitious products.</p><button>Explore system <span>→</span></button></div>
+  )}
+</div>
+
+<style>
+  .advanced-demo { width:100%; color:var(--fg); font-size:13px; }
+  .advanced-preview { transform:scale(.92); transform-origin:center; }
+  .adv-table,.adv-command,.adv-calendar,.adv-form,.adv-kanban,.adv-spotlight { width:100%; border:1px solid var(--border); background:color-mix(in srgb,var(--panel) 88%,transparent); border-radius:14px; overflow:hidden; box-shadow:var(--shadow-md); }
+  .adv-table-head,.adv-row { display:grid; grid-template-columns:1.6fr 1fr .7fr; gap:8px; align-items:center; padding:11px 14px; }
+  .adv-table-head { color:var(--fg-tertiary); font:10px var(--font-mono); text-transform:uppercase; border-bottom:1px solid var(--border); }
+  .adv-row { min-height:42px; border-bottom:1px solid var(--hair); }.adv-row:last-child{border:0}.adv-row b{font-weight:600}.adv-status{font-size:11px}.adv-status::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:currentColor;margin-right:5px}.live{color:var(--success)}.review{color:var(--warning)}.draft{color:var(--fg-tertiary)}
+  .adv-chart{padding:16px;border:1px solid var(--border);background:var(--panel);border-radius:14px}.chart-label{display:flex;gap:10px;align-items:baseline}.chart-label b{font-size:24px}.chart-label i{color:var(--success);font-style:normal;font-size:11px}.adv-chart svg{margin-top:12px;width:100%;height:125px}.chart-area{fill:url(#chart-fill-chart)}.chart-line{fill:none;stroke:var(--accent);stroke-width:3;stroke-linecap:round}
+  .adv-command{padding:8px}.adv-search{display:flex;align-items:center;gap:9px;padding:11px;color:var(--fg-tertiary);border-bottom:1px solid var(--border)}kbd{margin-left:auto;border:1px solid var(--border-strong);border-radius:5px;padding:2px 5px;font:10px var(--font-mono)}.adv-command-row{display:flex;align-items:center;gap:10px;padding:11px;border-radius:8px}.adv-command-row:first-of-type{background:var(--accent-soft)}.adv-command-row i{font-style:normal;color:var(--accent-ink)}.adv-command-row span{margin-left:auto;color:var(--fg-tertiary)}
+  .adv-segment{display:flex;gap:3px;padding:4px;border:1px solid var(--border);border-radius:11px;background:var(--surface-muted)}.adv-segment span{flex:1;text-align:center;padding:9px 12px;border-radius:8px;color:var(--fg-secondary)}.adv-segment .is-on{color:var(--fg);background:var(--panel);box-shadow:var(--shadow-sm);font-weight:600}
+  .adv-calendar{padding:14px}.adv-calendar header,.cal-week,.cal-days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.adv-calendar header{grid-template-columns:1fr auto;margin-bottom:14px}.adv-calendar header span{color:var(--fg-tertiary)}.cal-week i{font:10px var(--font-mono);color:var(--fg-tertiary);text-align:center;font-style:normal}.cal-days span{text-align:center;padding:7px 2px;border-radius:50%}.cal-days .is-on{background:var(--accent);color:var(--accent-contrast);font-weight:700}
+  .adv-form{display:grid;gap:10px;padding:15px}.adv-form label{display:grid;gap:5px;color:var(--fg-secondary);font-size:11px}.adv-form input{border:1px solid var(--border);border-radius:8px;background:var(--surface-muted);color:var(--fg);padding:9px;font:inherit}.adv-form button,.adv-spotlight button{border:0;border-radius:8px;background:var(--accent);color:var(--accent-contrast);font:600 12px var(--font-sans);padding:10px 13px;text-align:left}.adv-form button span,.adv-spotlight button span{float:right}
+  .adv-tooltip{display:flex;align-items:center;gap:12px;padding:15px;border:1px solid var(--border);border-radius:12px;background:var(--panel);box-shadow:var(--shadow-md)}.adv-tooltip button{width:28px;height:28px;border:1px solid var(--accent);border-radius:50%;background:var(--accent-soft);color:var(--accent-ink);font-weight:700}.adv-tooltip div{display:grid;gap:2px}.adv-tooltip span,.adv-timeline span,.adv-timeline small{color:var(--fg-tertiary);font-size:11px}
+  .adv-timeline{display:grid;gap:0}.adv-timeline>div{display:grid;grid-template-columns:28px 1fr auto;gap:7px;align-items:baseline;position:relative;padding:0 0 19px 0}.adv-timeline>div:not(:last-child)::after{content:"";position:absolute;left:13px;top:25px;bottom:0;width:1px;background:var(--border)}.adv-timeline i{grid-row:span 2;width:26px;height:26px;display:grid;place-items:center;border-radius:50%;background:var(--accent-soft);color:var(--accent-ink);font-style:normal}.adv-timeline span{grid-column:2/4}
+  .adv-kanban{display:flex;gap:10px;padding:10px;background:var(--bg);overflow:auto}.adv-kanban>div{flex:0 0 155px;padding:9px;background:var(--surface-muted);border-radius:10px}.adv-kanban header{display:flex;justify-content:space-between;font-weight:600;margin-bottom:8px}.adv-kanban header small{color:var(--fg-tertiary)}.adv-kanban article{display:grid;gap:3px;padding:10px;margin-top:7px;background:var(--panel);border:1px solid var(--border);border-radius:8px}.adv-kanban article span{font-size:10px;color:var(--fg-tertiary)}
+  .adv-spotlight{padding:19px;background:radial-gradient(circle at 100% 0,color-mix(in srgb,var(--accent) 20%,transparent),transparent 45%),var(--panel)}.adv-spotlight small{color:var(--accent-ink);font:10px var(--font-mono);letter-spacing:.12em}.adv-spotlight h3{font-size:25px;margin:9px 0 4px;letter-spacing:-.04em}.adv-spotlight p{color:var(--fg-secondary);margin:0 0 15px}.adv-spotlight button{display:block;width:100%}
+</style>

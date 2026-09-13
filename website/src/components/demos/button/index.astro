@@ -1,0 +1,99 @@
+---
+import IconBlock from "../../IconBlock.astro";
+
+interface Props {
+  preview?: boolean;
+}
+const { preview = false } = Astro.props;
+---
+{
+  preview ? (
+    <div class="pv">
+      <span class="pv-grid"></span>
+      <span class="pv-glow"></span>
+      <div class="pv-scene pvs">
+        <button class="pv-b pri" aria-hidden="true">
+          <span class="pv-shine"></span>
+          Continue
+        </button>
+        <button class="pv-b grad" aria-hidden="true">Gradient</button>
+        <button class="pv-b del" aria-hidden="true">Delete</button>
+      </div>
+    </div>
+  ) : (
+    <>
+      <div class="dk-stage" data-demo-bar>
+        <button class="dk-btn dk-btn--primary dk-btn--lg" id="demo-load">
+          <span class="dk-spin"></span><span class="dk-btn-label">Continue</span>
+        </button>
+        <button class="dk-btn dk-btn--gradient dk-btn--lg">
+          <IconBlock name="sparkle" size={16} /> Gradient
+        </button>
+        <button class="dk-btn dk-btn--secondary dk-btn--lg disabled">Secondary</button>
+        <button class="dk-btn dk-btn--outline dk-btn--lg">Outline</button>
+        <button class="dk-btn dk-btn--ghost dk-btn--lg">Ghost</button>
+        <button class="dk-btn dk-btn--destructive dk-btn--lg">Delete</button>
+        <button class="dk-btn dk-btn--glass dk-btn--lg">Glass</button>
+        <button class="dk-btn dk-btn--link dk-btn--lg">
+          Learn more <IconBlock name="arrow" size={15} />
+        </button>
+        <button class="dk-btn dk-btn--primary dk-btn--md">
+          <IconBlock name="plus" size={16} /> Add
+        </button>
+        <button class="dk-btn dk-btn--outline dk-btn--icon dk-btn--md">
+          <IconBlock name="arrow" size={16} />
+        </button>
+        <button class="dk-btn dk-btn--primary dk-btn--sm dk-btn--icon-only">×</button>
+      </div>
+    </>
+  )
+}
+<style>
+  .pvs {
+    gap: 10px;
+  }
+  .pv-b {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    border-radius: 9px;
+    padding: 9px 16px;
+    font-size: 12px;
+    border: 1px solid transparent;
+    cursor: default;
+    overflow: hidden;
+    animation: pv-pop 5.5s ease-in-out infinite;
+  }
+  .pv-b:nth-child(2) {
+    animation-delay: 1.2s;
+  }
+  .pv-b:nth-child(3) {
+    animation-delay: 2.4s;
+  }
+  .pv-b.pri {
+    background: var(--accent);
+    color: var(--accent-contrast);
+    animation: pv-float 4.4s ease-in-out infinite;
+  }
+  .pv-b.grad {
+    background: linear-gradient(135deg, var(--accent), var(--signal));
+    color: #07110a;
+    filter: drop-shadow(0 6px 14px color-mix(in srgb, var(--accent) 38%, transparent));
+  }
+  .pv-b.del {
+    background: color-mix(in srgb, var(--error) 14%, transparent);
+    color: var(--error);
+    border-color: color-mix(in srgb, var(--error) 34%, transparent);
+  }
+  .pv-shine {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 40%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+    animation: pv-shine 3.6s ease-in-out infinite;
+  }
+</style>

@@ -1,0 +1,84 @@
+---
+interface Props {
+  preview?: boolean;
+}
+const { preview = false } = Astro.props;
+---
+{
+  preview ? (
+    <div class="pv">
+      <span class="pv-grid"></span>
+      <span class="pv-glow"></span>
+      <div class="pv-scene">
+        <div class="boxes">
+          {[1, 2, 3, 4, 5, 6].map((n) => (
+            <span class="box" style={`--n:${n}`}></span>
+          ))}
+        </div>
+      </div>
+    </div>
+  ) : (
+    <div class="dk-stage dk-stage--col" style="min-height: 220px">
+      <div class="dk-otp" data-otp>
+        <input type="hidden" data-otp-input />
+        {[0, 1, 2, 3, 4, 5].map((_, i) => (
+          <span class="dk-otp-box" data-otp-box data-i={i} tabindex="0"></span>
+        ))}
+      </div>
+      <span class="dk-note">type right here — boxes fill, paste works, backspace undoes</span>
+    </div>
+  )
+}
+<style>
+  .boxes {
+    display: flex;
+    gap: 8px;
+  }
+  .box {
+    position: relative;
+    width: 40px;
+    height: 48px;
+    border-radius: 12px;
+    border: 1px solid var(--border-strong);
+    background: var(--panel-2);
+    animation: otp-cycle 5.5s ease-in-out infinite;
+    animation-delay: calc(var(--n) * 0.18s);
+  }
+  .box::after {
+    content: attr(data-d);
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-size: 17px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    opacity: 0;
+    animation: otp-digit 5.5s ease-in-out infinite;
+    animation-delay: calc(var(--n) * 0.18s);
+  }
+  .box:nth-child(1)::after { content: "4"; }
+  .box:nth-child(2)::after { content: "2"; }
+  .box:nth-child(3)::after { content: "7"; }
+  .box:nth-child(4)::after { content: "9"; }
+  .box:nth-child(5)::after { content: "1"; }
+  .box:nth-child(6)::after { content: "3"; }
+  @keyframes otp-cycle {
+    0%, 14% { border-color: var(--border-strong); box-shadow: none; transform: translateY(0); }
+    24%, 88% {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft), 0 0 18px color-mix(in srgb, var(--accent) 35%, transparent);
+      transform: translateY(-3px);
+      background: color-mix(in srgb, var(--accent) 10%, var(--panel-2));
+    }
+    24%, 88% { opacity: 1; }
+    34%, 80% { opacity: 1; }
+    92%, 100% { border-color: var(--border-strong); box-shadow: none; transform: translateY(0); }
+    24%, 100% { background: var(--panel-2); }
+  }
+  @keyframes otp-digit {
+    0%, 18% { opacity: 0; }
+    30%, 84% { opacity: 1; }
+    92%, 100% { opacity: 0; }
+  }
+</style>

@@ -1,0 +1,100 @@
+---
+interface Props {
+  preview?: boolean;
+}
+const { preview = false } = Astro.props;
+---
+{
+  preview ? (
+    <div class="pv">
+      <span class="pv-grid"></span>
+      <span class="pv-glow"></span>
+      <div class="pv-scene col">
+        <div class="head">
+          <span>Volume</span>
+          <span class="cap">68%</span>
+        </div>
+        <div class="track">
+          <i class="fill"></i>
+          <i class="dot"></i>
+        </div>
+      </div>
+    </div>
+  ) : (
+    <div class="dk-stage dk-stage--col" style="max-width: 380px; gap: 24px">
+      <div class="dk-slider">
+        <div class="dk-slider-head"><span>Volume</span><span class="dk-slider-cap" data-cap>68%</span></div>
+        <input type="range" min="0" max="100" value="68" style="--p: 68%" data-range />
+      </div>
+      <div class="dk-slider">
+        <div class="dk-slider-head"><span>Temperature</span><span class="dk-slider-cap" data-cap>68°</span></div>
+        <input type="range" min="0" max="100" value="68" style="--p: 68%" data-range data-suffix="°" />
+      </div>
+    </div>
+  )
+}
+<style>
+  .col {
+    flex-direction: column;
+    gap: 14px;
+    width: 240px;
+  }
+  .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .head .cap {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 7px;
+    background: var(--accent);
+    color: var(--accent-contrast);
+    animation: sl-cap 4.4s ease-in-out infinite;
+  }
+  .track {
+    position: relative;
+    height: 7px;
+    border-radius: 99px;
+    background: var(--surface-strong);
+    box-shadow: inset 0 0 0 1px var(--hair);
+  }
+  .fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 68%;
+    border-radius: 99px;
+    background: linear-gradient(90deg, var(--accent), var(--signal));
+    animation: sl-fill 4.4s ease-in-out infinite;
+    box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+  .dot {
+    position: absolute;
+    top: 50%;
+    left: 68%;
+    width: 19px;
+    height: 19px;
+    border-radius: 50%;
+    background: var(--fg);
+    border: 3px solid var(--accent);
+    transform: translate(-50%, -50%);
+    animation: sl-dot 4.4s ease-in-out infinite;
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--accent) 50%, transparent);
+  }
+  @keyframes sl-fill {
+    0%, 100% { width: 12%; }
+    42%, 58% { width: 82%; }
+  }
+  @keyframes sl-dot {
+    0%, 100% { left: 12%; }
+    42%, 58% { left: 82%; }
+  }
+  @keyframes sl-cap {
+    0%, 100% { content: "12%"; transform: scale(1); }
+    42%, 58% { transform: scale(1.08); }
+  }
+</style>

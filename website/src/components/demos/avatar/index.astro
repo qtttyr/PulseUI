@@ -1,0 +1,123 @@
+---
+interface Props {
+  preview?: boolean;
+}
+const { preview = false } = Astro.props;
+---
+{
+  preview ? (
+    <div class="pv">
+      <span class="pv-grid"></span>
+      <span class="pv-glow"></span>
+      <div class="pv-scene">
+        <span class="av a1">
+          <i class="ring"></i>
+          EN
+          <i class="st online"></i>
+        </span>
+        <span class="av a2">
+          <i class="ring"></i>
+          <span class="img"></span>
+          <i class="st busy"></i>
+        </span>
+        <span class="av a3">
+          <i class="ring"></i>
+          AR
+        </span>
+      </div>
+    </div>
+  ) : (
+    <div class="dk-stage">
+      <span class="dk-av dk-av--xs">A</span>
+      <span class="dk-av dk-av--sm">NA</span>
+      <span class="dk-av dk-av--md">LU</span>
+      <span class="dk-av dk-av--lg">MK</span>
+      <span class="dk-av dk-av--xl">SV</span>
+      <span class="dk-av dk-av--lg">
+        <span class="dk-av-img" style="background: linear-gradient(135deg, var(--accent), var(--signal))"></span>
+        <i class="dk-av-status"></i>
+      </span>
+      <span class="dk-av dk-av--lg">RM<i class="dk-av-status dk-av-status--busy"></i></span>
+      <span class="dk-av dk-av--lg">SV<i class="dk-av-status dk-av-status--thinking"></i></span>
+      <span class="dk-av dk-av--lg">JG<i class="dk-av-status dk-av-status--off"></i></span>
+    </div>
+  )
+}
+<style>
+  .av {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-family: var(--font-sans);
+    font-weight: 700;
+    animation: av-float 4.8s ease-in-out infinite;
+  }
+  .a1 {
+    width: 56px;
+    height: 56px;
+    font-size: 17px;
+    background: color-mix(in srgb, var(--accent) 16%, var(--panel));
+    color: var(--accent-ink);
+    border: 1px solid color-mix(in srgb, var(--accent) 34%, transparent);
+  }
+  .a2 {
+    width: 56px;
+    height: 56px;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    animation-delay: 0.8s;
+  }
+  .a3 {
+    width: 56px;
+    height: 56px;
+    font-size: 17px;
+    background: linear-gradient(135deg, var(--accent), var(--signal));
+    color: #07110a;
+    animation-delay: 1.6s;
+    box-shadow: 0 6px 18px color-mix(in srgb, var(--accent) 40%, transparent);
+  }
+  .img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--signal), var(--accent));
+    opacity: 0.9;
+  }
+  .ring {
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    border: 2px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    animation: pv-ring 3s ease-out infinite;
+  }
+  .a2 .ring {
+    animation-delay: 0.8s;
+  }
+  .st {
+    position: absolute;
+    right: -1px;
+    bottom: 0;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--panel);
+  }
+  .st.online {
+    background: var(--success);
+    animation: av-ping 2.4s ease-out infinite;
+  }
+  .st.busy {
+    background: var(--warning);
+  }
+  @keyframes av-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+  @keyframes av-ping {
+    0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--success) 50%, transparent); }
+    70% { box-shadow: 0 0 0 8px transparent; }
+    100% { box-shadow: 0 0 0 0 transparent; }
+  }
+</style>

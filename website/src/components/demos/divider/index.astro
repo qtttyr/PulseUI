@@ -1,0 +1,66 @@
+---
+interface Props {
+  preview?: boolean;
+}
+const { preview = false } = Astro.props;
+---
+{
+  preview ? (
+    <div class="pv">
+      <span class="pv-grid"></span>
+      <div class="pv-scene col">
+        <span class="line solid"></span>
+        <span class="mid"><span class="line"></span>Or continue with<span class="line"></span></span>
+        <span class="line grad"></span>
+      </div>
+    </div>
+  ) : (
+    <div class="dk-stage dk-stage--col" style="max-width: 520px; gap: 18px; min-height: 240px">
+      <div class="dk-div"><span class="dk-div-line"></span></div>
+      <div class="dk-div"><span class="dk-div-line"></span><span>Or continue with</span><span class="dk-div-line"></span></div>
+      <div class="dk-div dk-div--dashed"><span class="dk-div-line"></span></div>
+      <div class="dk-div dk-div--gradient dk-div--flow"><span class="dk-div-line"></span></div>
+      <div style="display: flex; gap: 18px; justify-content: center; align-items: center">
+        solid
+        <span class="dk-div dk-div--v"><span class="dk-div-line"></span></span>
+        dashed
+        <span class="dk-div dk-div--v dk-div--dashed"><span class="dk-div-line"></span></span>
+        vertical
+      </div>
+    </div>
+  )
+}
+<style>
+  .col {
+    flex-direction: column;
+    gap: 12px;
+    width: 230px;
+  }
+  .line {
+    display: block;
+    height: 1px;
+    background: var(--border-strong);
+    border-radius: 4px;
+  }
+  .line.grad {
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--signal), var(--accent));
+    background-size: 200% 100%;
+    animation: div-flow 3.2s linear infinite;
+  }
+  .mid {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--fg-tertiary);
+    font-size: 10px;
+    font-family: var(--font-mono);
+  }
+  .mid .line {
+    flex: 1;
+  }
+  @keyframes div-flow {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+  }
+</style>

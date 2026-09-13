@@ -1,0 +1,84 @@
+---
+interface Props {
+  preview?: boolean;
+}
+const { preview = false } = Astro.props;
+---
+{
+  preview ? (
+    <div class="pv">
+      <span class="pv-grid"></span>
+      <span class="pv-glow"></span>
+      <div class="pv-scene pvs">
+        <span class="b live"><i></i> Live</span>
+        <span class="b beta">Beta</span>
+        <span class="b new"><i></i> New</span>
+      </div>
+    </div>
+  ) : (
+    <div class="dk-stage">
+      <span class="dk-badge dk-badge--accent dk-badge--filled b-big">Shipped <i class="dk-pulse-dot"></i></span>
+      <span class="dk-badge dk-badge--accent dk-badge--subtle">Beta</span>
+      <span class="dk-badge dk-badge--success dk-badge--filled">Live <i class="dk-pulse-dot"></i></span>
+      <span class="dk-badge dk-badge--success dk-badge--subtle">Shipped</span>
+      <span class="dk-badge dk-badge--warning dk-badge--outlined">Pending</span>
+      <span class="dk-badge dk-badge--error dk-badge--subtle">3 errors</span>
+      <span class="dk-badge dk-badge--info dk-badge--subtle">Info</span>
+      <span class="dk-badge dk-badge--neutral dk-badge--subtle">v1.4.2</span>
+      <span class="dk-badge dk-badge--accent dk-badge--glass">Pro <i class="dk-pulse-dot"></i></span>
+      <span class="dk-badge dk-badge--neutral dk-badge--glass">Glass</span>
+    </div>
+  )
+}
+<style>
+  .pvs {
+    gap: 8px;
+  }
+  .b {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 6px 11px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    animation: bdg-breathe 4.6s ease-in-out infinite;
+  }
+  .b i {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+    animation: pv-blink 1.6s ease infinite;
+  }
+  .b.live {
+    background: var(--accent);
+    color: var(--accent-contrast);
+    border-color: transparent;
+    box-shadow: 0 4px 14px color-mix(in srgb, var(--accent) 35%, transparent);
+  }
+  .b.beta {
+    background: color-mix(in srgb, var(--info) 15%, transparent);
+    color: var(--info);
+    border-color: color-mix(in srgb, var(--info) 35%, transparent);
+    animation-delay: 0.7s;
+  }
+  .b.new {
+    background: color-mix(in srgb, var(--signal) 14%, transparent);
+    color: var(--signal);
+    border-color: color-mix(in srgb, var(--signal) 40%, transparent);
+    animation-delay: 1.4s;
+  }
+  .b-big {
+    font-size: 13px;
+    transform: scale(1.15);
+  }
+  @keyframes bdg-breathe {
+    0%, 100% { transform: translateY(0) scale(1); opacity: 0.92; }
+    50% { transform: translateY(-3px) scale(1.04); opacity: 1; }
+  }
+</style>

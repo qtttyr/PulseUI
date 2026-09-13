@@ -1,0 +1,84 @@
+---
+interface Props {
+  preview?: boolean;
+}
+const { preview = false } = Astro.props;
+---
+{
+  preview ? (
+    <div class="pv">
+      <span class="pv-grid"></span>
+      <span class="pv-glow" style="width:200px;height:140px"></span>
+      <div class="pv-scene col">
+        <span class="hero">Pulse UI</span>
+        <span class="roles">
+          <b>HERO</b><b>TITLE</b><b>BODY</b><b>MONO</b>
+        </span>
+      </div>
+    </div>
+  ) : (
+    <div class="dk-stage dk-stage--col" style="max-width: 600px; justify-content: center; gap: 6px; min-height: 380px">
+      <span class="dk-type dk-type--caption">Hero / display</span>
+      <span class="dk-type dk-type--hero gshine">Pulse UI</span>
+      <span class="dk-type dk-type--caption">Title — section</span>
+      <span class="dk-type dk-type--title">Financial overview</span>
+      <span class="dk-type dk-type--caption">Title2</span>
+      <span class="dk-type dk-type--title2">Settings</span>
+      <span class="dk-type dk-type--caption">Title3 / headline</span>
+      <span class="dk-type dk-type--title3">Washington D.C.</span>
+      <span class="dk-type dk-type--body">Body copy keeps your rhythm across screens, from lists to hero panels.</span>
+      <span class="dk-type dk-type--callout">Callout — smaller supporting copy for dense views.</span>
+      <span class="dk-type dk-type--caption">Mono caption</span>
+      <span class="dk-type dk-type--mono">$ npm i pulse-ui <i class="caret"></i></span>
+    </div>
+  )
+}
+<style>
+  .col {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+  .hero {
+    font-family: var(--font-sans);
+    font-size: 40px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    background: linear-gradient(90deg, var(--fg), var(--accent), var(--signal), var(--fg));
+    background-size: 250% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: lbl-flow 5s linear infinite;
+  }
+  .roles {
+    display: flex;
+    gap: 8px;
+  }
+  .roles b {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: var(--fg-tertiary);
+    padding: 3px 8px;
+    border: 1px solid var(--border);
+    border-radius: 99px;
+    animation: pv-breath 3.6s ease-in-out infinite;
+  }
+  .roles b:nth-child(2) { animation-delay: 0.4s; }
+  .roles b:nth-child(3) { animation-delay: 0.8s; }
+  .roles b:nth-child(4) { animation-delay: 1.2s; }
+  .gshine {
+    background: linear-gradient(90deg, var(--fg), var(--accent), var(--signal), var(--fg));
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: lbl-flow 6s linear infinite;
+  }
+  @keyframes lbl-flow {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 250% 50%; }
+  }
+</style>

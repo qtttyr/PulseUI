@@ -1,0 +1,518 @@
+---
+// Demo container: maps a slug to its standalone demo component
+// (markup lives in components/demos/<slug>/index.astro).
+import "../styles/demo.css";
+import { componentMap } from "../data/components";
+import DButton from "./demos/button/index.astro";
+import DBadge from "./demos/badge/index.astro";
+import DAvatar from "./demos/avatar/index.astro";
+import DLabel from "./demos/label/index.astro";
+import DCard from "./demos/card/index.astro";
+import DDivider from "./demos/divider/index.astro";
+import DSkeleton from "./demos/skeleton/index.astro";
+import DToggle from "./demos/toggle/index.astro";
+import DProgress from "./demos/progress/index.astro";
+import DAlert from "./demos/alert/index.astro";
+import DToast from "./demos/toast/index.astro";
+import DEmptyState from "./demos/empty-state/index.astro";
+import DSearch from "./demos/search/index.astro";
+import DChip from "./demos/chip/index.astro";
+import DRating from "./demos/rating/index.astro";
+import DCounter from "./demos/counter/index.astro";
+import DStepper from "./demos/stepper/index.astro";
+import DSlider from "./demos/slider/index.astro";
+import DOTP from "./demos/otp/index.astro";
+import DDateRange from "./demos/date-range/index.astro";
+import DList from "./demos/list/index.astro";
+import DInput from "./demos/input/index.astro";
+import DNavBar from "./demos/navigation-bar/index.astro";
+import DSidebar from "./demos/sidebar/index.astro";
+import DPicker from "./demos/picker/index.astro";
+import DAccordion from "./demos/accordion/index.astro";
+import DModal from "./demos/modal/index.astro";
+import DCarousel from "./demos/carousel/index.astro";
+import DTabBar from "./demos/tab-bar/index.astro";
+import DSheet from "./demos/sheet/index.astro";
+import DAdvanced from "./demos/advanced/index.astro";
+
+const DEMOS: Record<string, any> = {
+  button: DButton,
+  badge: DBadge,
+  avatar: DAvatar,
+  label: DLabel,
+  card: DCard,
+  divider: DDivider,
+  skeleton: DSkeleton,
+  toggle: DToggle,
+  progress: DProgress,
+  alert: DAlert,
+  toast: DToast,
+  "empty-state": DEmptyState,
+  search: DSearch,
+  chip: DChip,
+  rating: DRating,
+  counter: DCounter,
+  stepper: DStepper,
+  slider: DSlider,
+  otp: DOTP,
+  "date-range": DDateRange,
+  list: DList,
+  input: DInput,
+  "navigation-bar": DNavBar,
+  sidebar: DSidebar,
+  picker: DPicker,
+  accordion: DAccordion,
+  modal: DModal,
+  carousel: DCarousel,
+  "tab-bar": DTabBar,
+  sheet: DSheet,
+};
+const ADVANCED = new Set(["table", "chart", "command-palette", "segmented-control", "calendar", "form", "tooltip", "timeline", "kanban", "spotlight"]);
+
+interface Props {
+  slugs: string[];
+  showLabels?: boolean;
+}
+const { slugs, showLabels = false } = Astro.props;
+---
+
+<div class="demo-root">
+  {
+    slugs.map((slug, i) => {
+      const Demo = DEMOS[slug];
+      const meta = componentMap[slug];
+      if (!Demo && !ADVANCED.has(slug)) return;
+      const Render = ADVANCED.has(slug) ? DAdvanced : Demo;
+      return (
+        <section class="dk-block" data-block={slug}>
+          {
+            showLabels && (
+              <header class="dk-block-head">
+                <span class="dk-idx">{(i + 1).toString().padStart(2, "0")}</span>
+                <div>
+                  <h3>{meta.name}</h3>
+                  <span class="cat-pill">{meta.category}</span>
+                </div>
+                <span class="dk-live"><i class="alive-dot"></i> live</span>
+              </header>
+            )
+          }
+          {ADVANCED.has(slug) ? <Render kind={slug} /> : <Render />}
+        </section>
+      );
+    })
+  }
+</div>
+
+<script>
+  document.addEventListener("click", (e) => {
+    const t = e.target.closest ? e.target : null;
+    if (!t) return;
+
+    const tg = t.closest("[data-tg]");
+    if (tg && !t.closest("input")) {
+      tg.classList.toggle("is-on");
+      return;
+    }
+
+    const sbtn = t.closest("[data-step-btn]");
+    if (sbtn) {
+      const wrap = sbtn.closest("[data-step]");
+      const valEl = wrap.querySelector("[data-val]");
+      let v = parseInt(valEl.textContent, 10);
+      const step = parseInt(wrap.dataset.step || "1", 10);
+      const max = parseInt(wrap.dataset.max || "100", 10);
+      const min = parseInt(wrap.dataset.min || "0", 10);
+      v = Math.max(min, Math.min(max, v + parseInt(sbtn.dataset.stepBtn, 10) * step));
+      valEl.textContent = v;
+      return;
+    }
+
+    const chip = t.closest("[data-chip]");
+    if (chip) {
+      const group = chip.closest("[data-chips]");
+      if (group && group.dataset.single !== undefined) {
+        group.querySelectorAll("[data-chip]").forEach((c) => c.classList.remove("is-on"));
+      }
+      chip.classList.toggle("is-on");
+      return;
+    }
+
+    const rbtn = t.closest("[data-rate-btn]");
+    if (rbtn) {
+      const rate = rbtn.closest("[data-rate]");
+      const n = parseInt(rbtn.dataset.rateBtn, 10);
+      rate.querySelectorAll("[data-rate-btn]").forEach((b) => {
+        b.classList.toggle("is-on", parseInt(b.dataset.rateBtn, 10) <= n);
+      });
+      const cap = rate.querySelector("[data-rate-cap]");
+      if (cap) cap.textContent = n.toFixed(1);
+      return;
+    }
+
+    const segBtn = t.closest("[data-seg-btn]");
+    if (segBtn && !segBtn.disabled) {
+      const seg = segBtn.closest("[data-seg]");
+      seg.querySelectorAll("[data-seg-btn]").forEach((b) => b.classList.remove("is-on"));
+      segBtn.classList.add("is-on");
+      const thumb = seg.querySelector(".dk-seg-thumb");
+      if (thumb) {
+        thumb.style.transform = `translateX(${segBtn.offsetLeft - 4}px)`;
+        thumb.style.width = `${segBtn.offsetWidth}px`;
+      }
+      return;
+    }
+
+    const accBtn = t.closest("[data-acc-btn]");
+    if (accBtn) {
+      const item = accBtn.closest(".dk-acc-item");
+      const body = item.querySelector("[data-acc-body]");
+      const isOpen = !item.classList.contains("is-open");
+      item.classList.toggle("is-open", isOpen);
+      body.style.maxHeight = isOpen ? body.scrollHeight + "px" : "0px";
+      return;
+    }
+
+    const sideItem = t.closest("[data-side-item]");
+    if (sideItem) {
+      const side = sideItem.closest("[data-side]");
+      side.querySelectorAll("[data-side-item]").forEach((s) => s.classList.remove("is-on"));
+      sideItem.classList.add("is-on");
+      return;
+    }
+
+    const tab = t.closest("[data-tab]");
+    if (tab) {
+      const bar = tab.closest("[data-tabbar]");
+      bar.querySelectorAll("[data-tab]").forEach((s) => s.classList.remove("is-on"));
+      tab.classList.add("is-on");
+      const msg = tab.dataset.tab;
+      document.querySelectorAll(`[data-tabs-msg]`).forEach((m) => (m.textContent = msg));
+      return;
+    }
+
+    const mOpen = t.closest("[data-modal-open]");
+    if (mOpen) {
+      const key = mOpen.dataset.modalOpen || "";
+      const target = document.querySelector(`[data-modal="${CSS.escape(key)}"]`);
+      if (target) {
+        target.hidden = false;
+        document.body.style.overflow = "hidden";
+      }
+      return;
+    }
+    const mClose = t.closest("[data-modal-close]");
+    if (mClose) {
+      const modal = mClose.closest("[data-modal]");
+      if (modal) {
+        modal.hidden = true;
+        document.body.style.overflow = "";
+      }
+      return;
+    }
+
+    const sOpen = t.closest("[data-sheet-open]");
+    if (sOpen) {
+      const key = sOpen.dataset.sheetOpen || "";
+      const target = document.querySelector(`[data-sheet="${CSS.escape(key)}"]`);
+      if (target) target.hidden = false;
+      return;
+    }
+    const sClose = t.closest("[data-sheet-close]");
+    if (sClose) {
+      const wrap = sClose.closest("[data-sheet]");
+      if (wrap) wrap.hidden = true;
+      return;
+    }
+
+    const toastBtn = t.closest("[data-toast-btn]");
+    if (toastBtn) {
+      const wrap = t.closest(".dk-stage").querySelector("[data-toast-wrap]");
+      const toasts = wrap.querySelectorAll("[data-toast]");
+      const show = toasts[parseInt(toastBtn.dataset.toastIndex, 10)];
+      if (show) {
+        show.hidden = false;
+        setTimeout(() => (show.hidden = true), 2600);
+      }
+      return;
+    }
+    const toastX = t.closest("[data-toast-x]");
+    if (toastX) {
+      const toast = toastX.closest("[data-toast]");
+      if (toast) toast.hidden = true;
+      return;
+    }
+
+    const alertX = t.closest("[data-alert-x]");
+    if (alertX) {
+      alertX.closest(".dk-alert").style.display = "none";
+      return;
+    }
+
+    const replay = t.closest("[data-anim-replay]");
+    if (replay) {
+      const root = replay.closest(".dk-stage");
+      root.querySelectorAll("[data-prog]").forEach((p) => {
+        const fill = p.querySelector("[data-prog-fill]");
+        const val = parseInt(p.dataset.val, 10);
+        if (fill) {
+          fill.style.width = "0%";
+          requestAnimationFrame(() =>
+            requestAnimationFrame(() => (fill.style.width = val + "%"))
+          );
+        }
+      });
+      root.querySelectorAll(".dk-prog-ring").forEach((r) => {
+        r.style.setProperty("--p", 0);
+        requestAnimationFrame(() => requestAnimationFrame(() => r.style.setProperty("--p", 60)));
+      });
+      const counter = root.querySelector("[data-count]");
+      if (counter) animateCount(counter);
+      return;
+    }
+
+    const load = t.closest("[data-load]");
+    if (load) {
+      const targetId = load.dataset.loadTarget;
+      const target = targetId ? document.getElementById(targetId) : load.closest(".dk-empty").querySelector(".dk-btn");
+      if (target) {
+        target.classList.add("is-loading");
+        setTimeout(() => target.classList.remove("is-loading"), 1400);
+      }
+      return;
+    }
+
+    const carBar = t.closest("[data-car-bar]");
+    if (carBar) {
+      const car = carBar.closest("[data-car]");
+      const track = car.querySelector("[data-car-track]");
+      const card = track.querySelector(".dk-car-card");
+      const idx = parseInt(carBar.dataset.carBar, 10);
+      track.scrollTo({ left: (card.offsetWidth + 16) * idx, behavior: "smooth" });
+      return;
+    }
+  });
+
+  document.addEventListener("input", (e) => {
+    const r = e.target.closest("[data-range]");
+    if (r) {
+      r.style.setProperty("--p", r.value + "%");
+      const cap = r.closest(".dk-slider").querySelector("[data-cap]");
+      if (cap) cap.textContent = r.value + (r.dataset.suffix || "%");
+    }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    const act = document.activeElement;
+    if (act && act.matches("[data-otp-box]")) {
+      e.preventDefault();
+      const root = act.closest("[data-otp]");
+      const input = root.querySelector("[data-otp-input]");
+      const boxes = [...root.querySelectorAll("[data-otp-box]")];
+      const idx = boxes.indexOf(act);
+      if (/^\d$/.test(e.key)) {
+        if (input.value.length >= boxes.length) return;
+        input.value += e.key;
+        boxes[input.value.length - 1].classList.add("is-active");
+      } else if (e.key === "Backspace") {
+        input.value = input.value.slice(0, -1);
+      }
+      const list = input.value.split("");
+      boxes.forEach((b, i) => {
+        b.textContent = list[i] || "";
+        b.classList.toggle("is-masked", false);
+        b.classList.toggle("is-active", i === list.length);
+      });
+      boxes[list.length]?.focus();
+    }
+  });
+  document.addEventListener("click", (e) => {
+    const box = e.target.closest("[data-otp-box]");
+    if (box) e.preventDefault();
+  });
+  document.addEventListener("focusin", (e) => {
+    const box = e.target.closest("[data-otp-box]");
+    if (box) {
+      const root = box.closest("[data-otp]");
+      const boxes = [...root.querySelectorAll("[data-otp-box]")];
+      root.querySelectorAll("[data-otp-box]").forEach((b) => b.classList.remove("is-active"));
+      const list = root.querySelector("[data-otp-input]").value.length;
+      boxes[list]?.classList.add("is-active");
+    }
+  });
+
+  window.__pulsePresetDate = (btn) => {
+    if (btn) {
+      btn.parentElement.querySelectorAll("[data-preset]").forEach((p) => p.classList.remove("is-on"));
+      btn.classList.add("is-on");
+    }
+  };
+  document.addEventListener("click", (e) => {
+    const preset = e.target.closest("[data-preset]");
+    if (preset) {
+      window.__pulsePresetDate(preset);
+      const cal = preset.closest(".dk-dr").querySelector("[data-cal]");
+      const days = [...cal.querySelectorAll("[data-day]")];
+      days.forEach((d) => d.classList.remove("is-range", "is-start", "is-end"));
+      const today = new Date();
+      const stIdx = Math.max(0, today.getDate() - 1);
+      const enIdx = Math.min(days.length - 1, stIdx + 6);
+      days[stIdx]?.classList.add("is-start", "is-range");
+      for (let i = stIdx + 1; i < enIdx; i++) days[i]?.classList.add("is-range");
+      days[enIdx]?.classList.add("is-end");
+      return;
+    }
+    const day = e.target.closest("[data-day]");
+    if (day) {
+      const cal = day.closest("[data-cal]");
+      const days = [...cal.querySelectorAll("[data-day]")];
+      const on = days.filter((d) => d.classList.contains("is-range") || d.classList.contains("is-start") || d.classList.contains("is-end"));
+      days.forEach((d) => d.classList.remove("is-range", "is-start", "is-end"));
+      if (on.length) {
+        const a = on[0].dataset.day;
+        const b = day.dataset.day;
+        const lo = Math.min(+a, +b);
+        const hi = Math.max(+a, +b);
+        for (let i = lo; i <= hi; i++) days[i - 1]?.classList.add("is-range");
+        days[lo - 1]?.classList.add("is-start");
+        days[hi - 1]?.classList.add("is-end");
+      } else {
+        day.classList.add("is-start", "is-range");
+      }
+      return;
+    }
+    const nav = e.target.closest("[data-cal-nav]");
+    if (nav) {
+      const cal = nav.closest("[data-cal]");
+      const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      let m = (parseInt(cal.dataset.month, 10) + parseInt(nav.dataset.calNav, 10) + 12) % 12;
+      cal.dataset.month = m;
+      cal.querySelector("[data-cal-title]").textContent = `${months[m]} 2026`;
+    }
+  });
+
+  document.addEventListener("scroll", (e) => {
+    const track = e.target.closest && e.target.closest("[data-car-track]");
+    if (!track) return;
+    const car = track.closest("[data-car]");
+    const bars = car.querySelectorAll("[data-car-bar]");
+    const card = track.querySelector(".dk-car-card");
+    const cardW = card.offsetWidth + 16;
+    const idx = Math.round(track.scrollLeft / cardW);
+    bars.forEach((b) => b.classList.toggle("is-on", parseInt(b.dataset.carBar, 10) === idx));
+  }, true);
+
+  document.querySelectorAll("[data-prog-fill], .dk-prog-ring").forEach((el) => el.classList.add("dk-noanim"));
+  requestAnimationFrame(() =>
+    document.querySelectorAll("[data-prog-fill]").forEach((el) => {
+      el.classList.remove("dk-noanim");
+      el.style.width = el.closest("[data-prog]").dataset.val + "%";
+    })
+  );
+  requestAnimationFrame(() =>
+    document.querySelectorAll(".dk-prog-ring").forEach((el) => {
+      el.classList.remove("dk-noanim");
+      el.style.setProperty("--p", 60);
+    })
+  );
+
+  function animateCount(el) {
+    const target = parseInt(el.dataset.count, 10);
+    const dur = 1200;
+    const t0 = performance.now();
+    const fmt = (n) => n.toLocaleString("en-US");
+    el.textContent = fmt(0);
+    const step = (now) => {
+      const p = Math.min(1, (now - t0) / dur);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = fmt(Math.round(target * eased));
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+  document.querySelectorAll("[data-count]").forEach(animateCount);
+
+  document.querySelectorAll("[data-acc-body]").forEach((b) => {
+    const item = b.closest(".dk-acc-item");
+    if (item.classList.contains("is-open")) b.style.maxHeight = b.scrollHeight + "px";
+  });
+
+  document.querySelectorAll("[data-seg]").forEach((seg) => {
+    const on = seg.querySelector("[data-seg-btn].is-on");
+    const thumb = seg.querySelector(".dk-seg-thumb");
+    if (on && thumb) {
+      thumb.style.transform = `translateX(${on.offsetLeft - 4}px)`;
+      thumb.style.width = `${on.offsetWidth}px`;
+    }
+  });
+</script>
+
+<style>
+  .demo-root {
+    display: flex;
+    flex-direction: column;
+  }
+  .dk-block {
+    position: relative;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    background: var(--bg);
+    overflow: hidden;
+  }
+  .dk-block + .dk-block {
+    margin-top: 18px;
+  }
+  .dk-block-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    background: color-mix(in srgb, var(--panel) 70%, transparent);
+  }
+  .dk-block-head h3 {
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .dk-block-head > div {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .dk-idx {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent-ink);
+    min-width: 26px;
+  }
+  .dk-live {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--fg-tertiary);
+  }
+  .dk-live .alive-dot {
+    width: 6px;
+    height: 6px;
+  }
+  .alive-dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 99px;
+    background: var(--success);
+    animation: dk-alive 2.2s ease infinite;
+  }
+  @keyframes dk-alive {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  .dk-noanim {
+    transition: none !important;
+  }
+</style>

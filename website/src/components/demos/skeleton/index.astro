@@ -1,0 +1,105 @@
+---
+interface Props {
+  preview?: boolean;
+}
+const { preview = false } = Astro.props;
+---
+{
+  preview ? (
+    <div class="pv">
+      <span class="pv-grid" style="opacity:0.3"></span>
+      <span class="pv-glow"></span>
+      <div class="pv-scene">
+        <div class="sk-card">
+          <span class="sk-av"></span>
+          <div class="sk-lines">
+            <span class="sk-l w70"></span>
+            <span class="sk-l w40"></span>
+          </div>
+        </div>
+        <span class="sk-rect-and"></span>
+      </div>
+    </div>
+  ) : (
+    <div class="dk-stage">
+      <div class="dk-sk-card">
+        <div style="display: flex; gap: 12px; align-items: center">
+          <span class="dk-sk-avatar"></span>
+          <div style="flex: 1; display: flex; flex-direction: column; gap: 8px">
+            <span class="dk-sk-line" style="width: 70%"></span>
+            <span class="dk-sk-line" style="width: 40%"></span>
+          </div>
+        </div>
+        <span class="dk-sk-line"></span>
+        <span class="dk-sk-line" style="width: 85%"></span>
+        <span class="dk-sk-line" style="width: 60%"></span>
+        <span class="dk-sk-rect" style="height: 120px"></span>
+      </div>
+      <div class="dk-stage dk-stage--col dk-stage--top" style="gap: 12px; min-height: 0; padding: 8px; align-self: stretch">
+        <span class="dk-sk-rect" style="width: 160px; height: 48px"></span>
+        <span class="dk-sk-rect" style="width: 160px; height: 28px"></span>
+        <span class="dk-sk-rect" style="width: 120px; height: 28px"></span>
+        <span class="dk-sk-line" style="width: 160px"></span>
+      </div>
+    </div>
+  )
+}
+<style>
+  .sk-card {
+    width: 130px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--panel);
+    padding: 13px;
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+  }
+  .sk-av,
+  .sk-l,
+  .sk-rect-and {
+    position: relative;
+    overflow: hidden;
+    background: var(--surface-muted);
+    border-radius: 6px;
+  }
+  .sk-av {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .sk-l {
+    height: 10px;
+  }
+  .w70 { width: 70%; }
+  .w40 { width: 40%; }
+  .sk-rect-and {
+    width: 104px;
+    height: 78px;
+    border-radius: var(--radius-md);
+  }
+  .sk-av::after,
+  .sk-l::after,
+  .sk-rect-and::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(100deg, transparent 30%, color-mix(in srgb, var(--accent) 22%, transparent) 50%, transparent 70%);
+    transform: translateX(-100%);
+    animation: sk-shimmer 2.2s infinite;
+  }
+  .sk-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    flex: 1;
+  }
+  .sk-rect-and {
+    align-self: center;
+  }
+  @keyframes sk-shimmer {
+    0% { transform: translateX(-150%); }
+    60%, 100% { transform: translateX(250%); }
+  }
+</style>

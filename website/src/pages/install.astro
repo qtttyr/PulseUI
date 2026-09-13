@@ -1,0 +1,272 @@
+---
+import Base from "../layouts/Base.astro";
+
+const installs = [
+  {
+    title: "One-liner",
+    code: `curl -fsSL https://raw.githubusercontent.com/miras-la/PulseUI/main/scripts/install.sh | bash`,
+    desc: "Builds the CLI on first run and drops it into ~/.local/bin (Mac & Linux). Follow the PATH hint it prints.",
+  },
+  {
+    title: "Swift Package",
+    code: `git clone https://github.com/miras-la/PulseUI.git
+cd PulseUI && swift run pulse`,
+    desc: "No binaries at all — run straight from the source. Works anywhere Swift 6 is installed.",
+  },
+];
+
+const steps = [
+  {
+    n: "01",
+    title: "Install pulse",
+    code: `curl -fsSL https://raw.githubusercontent.com/miras-la/PulseUI/main/scripts/install.sh | bash`,
+    desc: "pulse is a tiny CLI that wires PulseUI into your Swift package.",
+  },
+  {
+    n: "02",
+    title: "Set up the package",
+    code: `pulse init`,
+    desc: "Adds the PulseUI dependency to your Package.swift, generates a PulseUITheme.swift start point, and prints the @main snippet to activate the theme.",
+  },
+  {
+    n: "03",
+    title: "Add components",
+    code: `pulse add button toast alert
+
+PulseButton("Continue", variant: .primary, size: .lg) {
+    await submit()
+}`,
+    desc: "One command, working code. Each component lands with a usage card. Add more anytime: pulse add otp slider avatar.",
+  },
+  {
+    n: "04",
+    title: "Bring your own theme",
+    code: `PulseTheme(
+    colors: ColorTokens(
+        accent: Color(light: 0x9ACA00, dark: 0xD9FE3E)
+    ),
+    radius: RadiusTokens(md: 10, lg: 14, xl: 18)
+)`,
+    desc: "Open the studio to generate your brand palette to Swift code, or hand-write it. Change one token — the whole app re-skins.",
+  },
+];
+---
+
+<Base title="Install — Pulse UI">
+  <section class="page-head">
+    <div class="container">
+      <p class="eyebrow"><b>Install</b>&nbsp;·&nbsp;two commands</p>
+      <h1>Your screen,<br /><span class="outline-text">in minutes.</span></h1>
+      <p class="sub">
+        PulseUI is a plain Swift Package with a shadcn-style CLI:
+        two commands, nothing to copy-paste by hand, no generated code kept
+        in your repo — unless you want the sources.
+      </p>
+      <div class="badges">
+        <span class="badge">pulse init</span>
+        <span class="badge">pulse add &lt;component…&gt;</span>
+        <span class="badge">Swift 6</span>
+        <span class="badge">iOS 26+ · macOS 26+ · visionOS 26+ · Swift 6</span>
+        <span class="badge">MIT License</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="container install-grid">
+    {
+      installs.map((i) => (
+        <div class="install-card">
+          <h3>{i.title}</h3>
+          <div class="install-code">
+            <pre><code>{i.code.trim()}</code></pre>
+          </div>
+          <p>{i.desc}</p>
+        </div>
+      ))
+    }
+  </section>
+
+  <section class="container steps-list">
+    {
+      steps.map((s) => (
+        <div class="step">
+          <div class="step-left">
+            <span class="step-num">{s.n}</span>
+            <div>
+              <h2>{s.title}</h2>
+              <p>{s.desc}</p>
+            </div>
+          </div>
+          <div class="step-code">
+            <pre><code>{s.code.trim()}</code></pre>
+          </div>
+        </div>
+      ))
+    }
+  </section>
+
+  <section class="container tail">
+    <h2>Next steps</h2>
+    <div class="tail-links">
+      <a class="btn btn-accent" href="/components/">Browse components</a>
+      <a class="btn btn-outline" href="/studio/">Generate your theme</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .page-head {
+    padding: clamp(40px, 7vh, 76px) 0 28px;
+  }
+  .page-head h1 {
+    font-size: clamp(2rem, 4.5vw, 3.2rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+  .sub {
+    margin-top: 12px;
+    max-width: 680px;
+    color: var(--fg-secondary);
+    font-size: 1.05rem;
+  }
+
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px;
+  }
+  .badge {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--fg-secondary);
+    background: var(--surface-muted);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 5px 12px;
+    font-family: var(--font-mono);
+  }
+
+  .install-grid {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+  @media (max-width: 900px) {
+    .install-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .install-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    background: var(--panel);
+    padding: 20px;
+  }
+  .install-card h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+  .install-card p {
+    margin-top: 10px;
+    color: var(--fg-secondary);
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+  .install-code {
+    margin-top: 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: color-mix(in srgb, var(--bg) 55%, transparent);
+    overflow-x: auto;
+  }
+  .install-code pre {
+    margin: 0;
+    padding: 14px;
+    font-size: 12.5px;
+    line-height: 1.7;
+  }
+
+  .steps-list {
+    margin-top: 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .step {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 1.3fr;
+    gap: 20px;
+    align-items: start;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    background: var(--panel);
+    padding: 24px;
+  }
+
+  @media (max-width: 860px) {
+    .step {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .step-left {
+    display: flex;
+    gap: 16px;
+  }
+  .step-num {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    background: var(--accent-soft);
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+  }
+  .step-left h2 {
+    font-size: 1.15rem;
+    font-weight: 700;
+  }
+  .step-left p {
+    margin-top: 6px;
+    color: var(--fg-secondary);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .step-code {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: color-mix(in srgb, var(--bg) 55%, transparent);
+    overflow-x: auto;
+  }
+  .step-code pre {
+    margin: 0;
+    padding: 16px;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .tail {
+    margin-top: 48px;
+    text-align: center;
+  }
+  .tail h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+  }
+  .tail-links {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 18px;
+    flex-wrap: wrap;
+  }
+</style>

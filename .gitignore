@@ -1,0 +1,22 @@
+# Swift Package Manager
+.build/
+.swiftpm/configuration/
+.swiftpm/xcode/xcuserdata/
+Package.resolved
+
+# Xcode
+DerivedData/
+*.xcuserstate
+xcuserdata/
+
+# Astro / Node
+website/node_modules/
+website/.astro/
+website/dist/
+npm-debug.log*
+
+# OS and editor files
+.DS_Store
+.idea/
+.vscode/
+*.swp

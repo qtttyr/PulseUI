@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 const repoRoot = fileURLToPath(new URL("../../", import.meta.url));
 
 export default defineConfig({
-  site: "https://pulse-ui.dev",
+  site: "https://pulseuimk.vercel.app",
   compressHTML: true,
   build: {
     inlineStylesheets: "always",

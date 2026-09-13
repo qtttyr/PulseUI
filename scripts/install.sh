@@ -1,14 +1,14 @@
 #!/usr/bin/env sh
 # PulseUI CLI installer — macOS & Linux, POSIX sh only.
 #
-#   curl -fsSL https://raw.githubusercontent.com/miras-la/PulseUI/main/scripts/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/qtttyr/PulseUI/main/scripts/install.sh | bash
 #
 # Builds the `pulse` CLI from source on first run (requires Swift 6+)
 # and drops the binary into ${PULSE_PREFIX:-~/.local/bin}.
 
 set -e
 
-REPO_URL=${PULSE_REPO_URL:-https://github.com/miras-la/PulseUI.git}
+REPO_URL=${PULSE_REPO_URL:-https://github.com/qtttyr/PulseUI.git}
 PREFIX=${PULSE_PREFIX:-"${HOME}/.local/bin"}
 
 quote() { printf '%s ' "$@"; }

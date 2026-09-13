@@ -4,12 +4,12 @@ import Base from "../layouts/Base.astro";
 const installs = [
   {
     title: "One-liner",
-    code: `curl -fsSL https://raw.githubusercontent.com/miras-la/PulseUI/main/scripts/install.sh | bash`,
+    code: `curl -fsSL https://raw.githubusercontent.com/qtttyr/PulseUI/main/scripts/install.sh | bash`,
     desc: "Builds the CLI on first run and drops it into ~/.local/bin (Mac & Linux). Follow the PATH hint it prints.",
   },
   {
     title: "Swift Package",
-    code: `git clone https://github.com/miras-la/PulseUI.git
+    code: `git clone https://github.com/qtttyr/PulseUI.git
 cd PulseUI && swift run pulse`,
     desc: "No binaries at all — run straight from the source. Works anywhere Swift 6 is installed.",
   },
@@ -19,7 +19,7 @@ const steps = [
   {
     n: "01",
     title: "Install pulse",
-    code: `curl -fsSL https://raw.githubusercontent.com/miras-la/PulseUI/main/scripts/install.sh | bash`,
+    code: `curl -fsSL https://raw.githubusercontent.com/qtttyr/PulseUI/main/scripts/install.sh | bash`,
     desc: "pulse is a tiny CLI that wires PulseUI into your Swift package.",
   },
   {
@@ -48,6 +48,12 @@ PulseButton("Continue", variant: .primary, size: .lg) {
     radius: RadiusTokens(md: 10, lg: 14, xl: 18)
 )`,
     desc: "Open the studio to generate your brand palette to Swift code, or hand-write it. Change one token — the whole app re-skins.",
+  },
+  {
+    n: "05",
+    title: "Leave cleanly",
+    code: `pulse remove --yes`,
+    desc: "Removes the PulseUI dependency and CLI-generated theme scaffold. Vendored component sources and your app code stay untouched.",
   },
 ];
 ---

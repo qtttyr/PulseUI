@@ -37,10 +37,14 @@ echo "building release binary …"
   swift build -c release --product pulse 2>/dev/null || swift build -c release
 )
 
-BIN=$(find "$TMPDIR_T/PulseUI/.build" -type f -path "*/release/pulse" -perm -111 -print -quit 2>/dev/null || true)
-if [ -z "$BIN" ]; then
+BIN_DIR=$(
+  cd "$TMPDIR_T/PulseUI"
+  swift build -c release --show-bin-path 2>/dev/null || true
+)
+BIN="$BIN_DIR/pulse"
+if [ ! -x "$BIN" ]; then
   echo "error: build completed but no executable pulse binary was found." >&2
-  echo "       searched SwiftPM release output under $TMPDIR_T/PulseUI/.build" >&2
+  echo "       expected: $BIN" >&2
   exit 1
 fi
 

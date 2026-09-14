@@ -28,8 +28,10 @@ public enum PulseCLI {
             return CommandInit().run(arguments: Array(args.dropFirst()))
         case "add":
             return CommandAdd().run(arguments: Array(args.dropFirst()))
-        case "remove", "uninstall":
+        case "remove":
             return CommandRemove().run(arguments: Array(args.dropFirst()))
+        case "uninstall":
+            return CommandUninstall().run(arguments: Array(args.dropFirst()))
         case "list":
             return CommandList().run(arguments: Array(args.dropFirst()))
         case "doctor":
@@ -115,7 +117,7 @@ public enum PulseCLI {
           pulse add --all             Add every component
           pulse add --source [...]    Vendor source files into Sources/PulseUI
           pulse remove                Remove PulseUI integration, keep sources
-          pulse uninstall             Alias for pulse remove
+          pulse uninstall              Remove the installed pulse CLI
           pulse list                  Show the component catalog
           pulse doctor                Check your environment
           pulse version
@@ -725,6 +727,57 @@ struct CommandRemove {
 
     private func relative(_ url: URL, to project: URL) -> String {
         String(url.path.dropFirst(project.path.count + 1))
+    }
+}
+
+// MARK: - uninstall
+
+struct CommandUninstall {
+    func run(arguments: [String]) -> Int32 {
+        let options = ParsedOptions(arguments: arguments)
+        let executable = URL(fileURLWithPath: CommandLine.arguments.first ?? "")
+        let path = executable.standardizedFileURL.path
+        let resolvedPath = executable.resolvingSymlinksInPath().standardizedFileURL.path
+        let isHomebrew = resolvedPath.contains("/Cellar/") || resolvedPath.contains("/Homebrew/")
+
+        Console.info("\npulse uninstall — remove the Pulse CLI\n")
+        if isHomebrew {
+            Console.info("""
+            This CLI was installed by Homebrew.
+
+            Run:
+              brew uninstall pulse
+
+            This removes the `pulse` command. Your projects and vendored
+            component sources are not touched.
+            """)
+            Console.dim("Installed binary: \(path)")
+            return 0
+        }
+
+        guard !path.isEmpty, FileManager.default.isExecutableFile(atPath: path) else {
+            Console.warn("The current pulse executable path could not be identified.")
+            Console.info("Remove it with your package manager or delete the installed pulse binary.")
+            return 1
+        }
+
+        Console.step("Executable: \(path)")
+        Console.ok("Your projects and component sources will not be changed")
+        guard options.yes || Console.prompt("Remove this CLI?") else {
+            Console.info("Cancelled. Nothing was changed.")
+            return 0
+        }
+
+        do {
+            try FileManager.default.removeItem(atPath: path)
+            Console.ok("Removed pulse")
+            Console.info("Open a new terminal or refresh your shell hash. Then `pulse init` will be unavailable.")
+            return 0
+        } catch {
+            Console.error("Could not remove \(path): \(error.localizedDescription)")
+            Console.info("Try: rm \(path)")
+            return 1
+        }
     }
 }
 

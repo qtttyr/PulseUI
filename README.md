@@ -186,6 +186,7 @@ pulse add button card table       Add only the components you need
 pulse add --all                    Add the complete catalog
 pulse add --source button         Vendor editable source into the project
 pulse remove --yes                 Remove integration, preserve component files
+pulse uninstall                    Remove the installed CLI (Homebrew-aware)
 pulse list                         Browse the catalog
 pulse doctor                       Check Swift and project setup
 ```

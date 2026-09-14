@@ -52,8 +52,11 @@ PulseButton("Continue", variant: .primary, size: .lg) {
   {
     n: "05",
     title: "Leave cleanly",
-    code: `pulse remove --yes`,
-    desc: "Removes the PulseUI dependency and CLI-generated theme scaffold. Vendored component sources and your app code stay untouched.",
+    code: `pulse remove --yes
+
+# if installed with Homebrew:
+brew uninstall pulse`,
+    desc: "pulse remove leaves project components untouched. To remove the CLI itself, use pulse uninstall or brew uninstall pulse when installed through Homebrew.",
   },
 ];
 ---

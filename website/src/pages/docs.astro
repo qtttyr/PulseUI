@@ -32,12 +32,30 @@ import Base from "../layouts/Base.astro";
   </section>
 
   <section class="principles">
-    <div class="container principles-grid">
-      <div><span class="section-index">02</span><h2>The rules<br /><em>behind the glow.</em></h2></div>
-      <div class="principle-list">
-        <div><span>01</span><h3>Native first</h3><p>SwiftUI APIs, platform conventions, Dynamic Type, VoiceOver and keyboard navigation are part of the component — not an afterthought.</p></div>
-        <div><span>02</span><h3>Glass with intent</h3><p>Liquid Glass belongs around navigation, toolbars, menus and transient actions. Content stays calm, legible and fast.</p></div>
-        <div><span>03</span><h3>Own the source</h3><p>Pulse copies the source into your project. No runtime lock-in, opaque generator or hidden design layer.</p></div>
+    <div class="container principles-shell">
+      <div class="principles-heading">
+        <span class="section-index">02 / principles</span>
+        <h2>The system has<br /><em>a point of view.</em></h2>
+        <p>Three decisions keep PulseUI expressive, native and genuinely useful in production.</p>
+      </div>
+      <div class="principle-stage" data-principles>
+        <div class="principle-tabs" role="tablist" aria-label="PulseUI principles">
+          <button class="principle-tab is-active" role="tab" aria-selected="true" aria-controls="principle-native" data-principle="native"><span>01</span><b>Native</b></button>
+          <button class="principle-tab" role="tab" aria-selected="false" aria-controls="principle-glass" data-principle="glass"><span>02</span><b>Intentional</b></button>
+          <button class="principle-tab" role="tab" aria-selected="false" aria-controls="principle-source" data-principle="source"><span>03</span><b>Owned</b></button>
+        </div>
+        <div class="principle-panel is-active" id="principle-native" role="tabpanel">
+          <div class="panel-art art-native"><i></i><i></i><i></i><i></i><div class="art-label">SwiftUI<br /><b>by default</b></div></div>
+          <div class="panel-copy"><span class="panel-kicker">The foundation</span><h3>It speaks the platform.</h3><p>Pulse components feel at home because they use SwiftUI primitives and platform behavior first. Dynamic Type, VoiceOver, keyboard navigation and Reduce Motion are built into the API.</p><div class="panel-meta"><span>iOS</span><span>iPadOS</span><span>macOS</span><span>visionOS</span></div></div>
+        </div>
+        <div class="principle-panel" id="principle-glass" role="tabpanel" hidden>
+          <div class="panel-art art-glass"><i></i><i></i><div class="art-label">Glass<br /><b>with intent</b></div></div>
+          <div class="panel-copy"><span class="panel-kicker">The restraint</span><h3>Material is a role, not a costume.</h3><p>Liquid Glass is reserved for navigation, toolbars, menus, floating actions and transient UI. Content stays sharp, calm and fast to scan.</p><div class="panel-meta"><span>Focus</span><span>Depth</span><span>Motion</span></div></div>
+        </div>
+        <div class="principle-panel" id="principle-source" role="tabpanel" hidden>
+          <div class="panel-art art-source"><div class="source-lines"><i></i><i></i><i></i><i></i></div><div class="art-label">Your code<br /><b>your rules</b></div></div>
+          <div class="panel-copy"><span class="panel-kicker">The promise</span><h3>Nothing disappears behind a runtime.</h3><p>Pulse copies the source into your project. Inspect it, tune it, ship it. No opaque generator, no hidden design layer, no lock-in.</p><div class="panel-meta"><span>Copy-paste</span><span>Editable</span><span>Open</span></div></div>
+        </div>
       </div>
     </div>
   </section>
@@ -49,6 +67,36 @@ import Base from "../layouts/Base.astro";
     <a class="btn btn-accent" href="/components/">Explore components <span>→</span></a>
   </section>
 </Base>
+
+<script is:inline>
+  const principleRoot = document.querySelector("[data-principles]");
+  if (principleRoot) {
+    const tabs = [...principleRoot.querySelectorAll("[data-principle]")];
+    const panels = [...principleRoot.querySelectorAll(".principle-panel")];
+    const activate = (name) => {
+      tabs.forEach((tab) => {
+        const active = tab.dataset.principle === name;
+        tab.classList.toggle("is-active", active);
+        tab.setAttribute("aria-selected", String(active));
+      });
+      panels.forEach((panel) => {
+        const active = panel.id === `principle-${name}`;
+        panel.classList.toggle("is-active", active);
+        panel.hidden = !active;
+      });
+    };
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => activate(tab.dataset.principle));
+      tab.addEventListener("keydown", (event) => {
+        if (!["ArrowRight", "ArrowDown", "ArrowLeft", "ArrowUp"].includes(event.key)) return;
+        event.preventDefault();
+        const next = tabs[(index + (event.key === "ArrowRight" || event.key === "ArrowDown" ? 1 : -1) + tabs.length) % tabs.length];
+        next.focus();
+        activate(next.dataset.principle);
+      });
+    });
+  }
+</script>
 
 <style>
   .docs-hero { padding: clamp(64px, 11vw, 140px) 0 100px; overflow: hidden; }
@@ -80,10 +128,29 @@ import Base from "../layouts/Base.astro";
   .step-number { color: var(--accent-ink); font: 12px var(--font-mono); }
   .flow-step h3 { margin: 0 0 7px; font-size: 1.2rem; }.flow-step p { margin: 0 0 14px; color: var(--fg-secondary); line-height: 1.55; }
   code { display: inline-block; max-width: 100%; overflow: auto; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; color: var(--accent-ink); background: var(--surface-muted); font: 11px var(--font-mono); white-space: nowrap; }
-  .principles { padding: 100px 0; background: var(--bg-soft); border-block: 1px solid var(--border); }
-  .principles-grid { display: grid; grid-template-columns: .7fr 1.3fr; gap: 80px; }.principle-list { display: grid; gap: 30px; }
-  .principle-list > div { display: grid; grid-template-columns: 40px 1fr; gap: 14px; padding-top: 20px; border-top: 1px solid var(--border); }.principle-list span { color: var(--accent-ink); font: 11px var(--font-mono); }.principle-list h3 { margin: 0 0 7px; }.principle-list p { margin: 0; color: var(--fg-secondary); line-height: 1.6; }
+  .principles { padding: 110px 0; background: var(--bg-soft); border-block: 1px solid var(--border); overflow: hidden; }
+  .principles-shell { display: grid; grid-template-columns: .65fr 1.35fr; gap: clamp(36px, 7vw, 100px); align-items: center; }
+  .principles-heading h2 { margin: 16px 0; font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: .96; letter-spacing: -.06em; }
+  .principles-heading p { max-width: 270px; color: var(--fg-secondary); line-height: 1.6; }
+  .principle-stage { min-width: 0; }
+  .principle-tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+  .principle-tab { display: inline-flex; align-items: center; gap: 9px; padding: 9px 13px; border: 1px solid var(--border); border-radius: 10px; color: var(--fg-tertiary); background: transparent; cursor: pointer; font: 12px var(--font-body); transition: color .2s ease, border-color .2s ease, background .2s ease, transform .2s var(--motion-snappy); }
+  .principle-tab span { color: var(--accent-ink); font: 10px var(--font-mono); }
+  .principle-tab:hover { transform: translateY(-2px); color: var(--fg); border-color: var(--border-strong); }
+  .principle-tab.is-active { color: var(--fg); border-color: color-mix(in srgb, var(--accent) 50%, var(--border)); background: color-mix(in srgb, var(--accent) 10%, var(--panel)); }
+  .principle-panel { display: grid; grid-template-columns: minmax(170px, .7fr) 1.3fr; gap: clamp(24px, 4vw, 48px); align-items: center; min-height: 320px; padding: clamp(22px, 4vw, 42px); border: 1px solid var(--border-strong); border-radius: 24px; background: color-mix(in srgb, var(--panel) 72%, transparent); box-shadow: var(--shadow-lg); animation: panel-in .42s var(--motion-snappy) both; }
+  .panel-copy { min-width: 0; }.panel-kicker { color: var(--accent-ink); font: 10px var(--font-mono); letter-spacing: .12em; text-transform: uppercase; }
+  .panel-copy h3 { margin: 13px 0 10px; font-size: clamp(1.55rem, 3vw, 2.5rem); line-height: 1; letter-spacing: -.05em; }
+  .panel-copy p { margin: 0; color: var(--fg-secondary); line-height: 1.65; }
+  .panel-meta { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 22px; }.panel-meta span { padding: 6px 9px; border: 1px solid var(--border); border-radius: 7px; color: var(--fg-tertiary); font: 10px var(--font-mono); }
+  .panel-art { position: relative; min-height: 220px; overflow: hidden; border: 1px solid color-mix(in srgb, var(--accent) 34%, var(--border)); border-radius: 18px; background: color-mix(in srgb, var(--accent) 7%, var(--bg)); }
+  .panel-art .art-label { position: absolute; left: 18px; bottom: 16px; color: var(--fg-tertiary); font: 11px/1.35 var(--font-mono); text-transform: uppercase; letter-spacing: .08em; }.art-label b { color: var(--fg); }
+  .art-native i { position: absolute; left: 25%; width: 50%; height: 10px; border-radius: 99px; background: var(--accent); opacity: .8; animation: native-bars 2.8s ease-in-out infinite; }.art-native i:nth-child(1) { top: 30%; }.art-native i:nth-child(2) { top: 42%; width: 35%; }.art-native i:nth-child(3) { top: 54%; width: 44%; animation-delay: .15s; }.art-native i:nth-child(4) { top: 66%; width: 27%; animation-delay: .3s; }
+  .art-glass i { position: absolute; width: 105px; height: 105px; border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent); border-radius: 28px; background: color-mix(in srgb, var(--accent) 13%, transparent); backdrop-filter: blur(12px); transform: rotate(28deg); animation: glass-float 4s ease-in-out infinite; }.art-glass i:first-child { top: 28%; left: 20%; }.art-glass i:nth-child(2) { top: 12%; left: 48%; width: 80px; height: 80px; animation-delay: -.9s; }
+  .source-lines { position: absolute; inset: 28px 24px 56px; display: grid; gap: 12px; align-content: center; }.source-lines i { display: block; height: 7px; width: 90%; border-radius: 99px; background: var(--accent); opacity: .7; }.source-lines i:nth-child(2) { width: 65%; }.source-lines i:nth-child(3) { width: 78%; }.source-lines i:nth-child(4) { width: 42%; }
+  @keyframes panel-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } } @keyframes native-bars { 50% { transform: translateX(12px); opacity: .45; } } @keyframes glass-float { 50% { transform: rotate(36deg) translate(10px, -8px); } }
   .docs-end { padding: 130px 0 40px; }.docs-end p { margin-bottom: 24px; }
-  @media (max-width: 800px) { .docs-hero-grid, .docs-flow, .principles-grid { grid-template-columns: 1fr; gap: 44px; }.signal-orbit { justify-self: center; width: min(100%, 350px); }.docs-flow { padding-bottom: 80px; } }
-  @media (prefers-reduced-motion: reduce) { .orbit, .orbit-core { animation: none; }.flow-step:hover { transform: none; } }
+  @media (max-width: 800px) { .docs-hero-grid, .docs-flow, .principles-shell { grid-template-columns: 1fr; gap: 44px; }.signal-orbit { justify-self: center; width: min(100%, 350px); }.docs-flow { padding-bottom: 80px; } }
+  @media (max-width: 560px) { .principles { padding: 76px 0; }.principle-tabs { overflow-x: auto; padding-bottom: 3px; scrollbar-width: none; }.principle-tab { flex: 0 0 auto; }.principle-panel { grid-template-columns: 1fr; min-height: 0; padding: 18px; }.panel-art { min-height: 190px; }.panel-copy h3 { font-size: 1.9rem; } }
+  @media (prefers-reduced-motion: reduce) { .orbit, .orbit-core, .principle-panel, .art-native i, .art-glass i { animation: none; }.flow-step:hover, .principle-tab:hover { transform: none; } }
 </style>

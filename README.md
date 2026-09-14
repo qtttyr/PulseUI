@@ -69,6 +69,19 @@ pulse add button card table chart command-palette
 `pulse add` records the components your project actually uses. No registry,
 configuration maze or handwritten boilerplate is required.
 
+For a regular Xcode App project with no `Package.swift`, run the same commands
+from the folder containing the `.xcodeproj`. PulseUI will create and attach a
+`PulseUIComponents/` source group to the app target, generate the theme, and
+write an `AGENTS.md` guide containing the component map and safe editing rules:
+
+```bash
+pulse init --accent '#B51A00' --radius 10
+pulse add button card table
+```
+
+In this vendored Xcode mode the components are part of the app target, so use
+their types directly without `import PulseUI`.
+
 For the entire catalog:
 
 ```bash

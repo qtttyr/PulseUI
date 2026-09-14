@@ -56,6 +56,22 @@ public enum PulseCLI {
             if fm.fileExists(atPath: current.appendingPathComponent("Package.swift").path) {
                 return current
             }
+
+            let parent = current.deletingLastPathComponent()
+            if parent.path == current.path { return nil }
+            current = parent
+        }
+    }
+
+    public static func detectXcodeProjectFolder(startingAt path: String = FileManager.default.currentDirectoryPath) -> URL? {
+        var current = URL(fileURLWithPath: path, isDirectory: true)
+        let fm = FileManager.default
+        while true {
+            if let entry = try? fm.contentsOfDirectory(at: current, includingPropertiesForKeys: nil)
+                .first(where: { $0.pathExtension == "xcodeproj" }),
+               fm.fileExists(atPath: entry.appendingPathComponent("project.pbxproj").path) {
+                return current
+            }
             let parent = current.deletingLastPathComponent()
             if parent.path == current.path { return nil }
             current = parent
@@ -232,8 +248,8 @@ struct CommandInit {
             return 2
         }
 
-        guard let project = PulseCLI.detectProjectFolder() else {
-            Console.warn("No Package.swift found in this folder (or any parent).")
+        guard let project = PulseCLI.detectProjectFolder() ?? PulseCLI.detectXcodeProjectFolder() else {
+            Console.warn("No Package.swift or Xcode project found in this folder (or any parent).")
             Console.info("""
                 For an Xcode project: add the package manually once —
                   File → Add Package Dependencies… → \(PulseCLI.repoURL)
@@ -245,6 +261,10 @@ struct CommandInit {
         }
 
         Console.step("Project: \(project.path)")
+
+        if !FileManager.default.fileExists(atPath: project.appendingPathComponent("Package.swift").path) {
+            return setupXcodeProject(project: project, options: options)
+        }
 
         // 1. Dependency.
         let packageFile = project.appendingPathComponent("Package.swift")
@@ -272,6 +292,15 @@ struct CommandInit {
         } else {
             Console.dim("Theme scaffold already exists at \(relative(themeURL, to: project)) (kept)")
         }
+        let agentsURL = project.appendingPathComponent("AGENTS.md")
+        let didWriteAgents = (try? PulseCLI.write(
+            AgentsTemplate.render(componentRoot: "Sources/PulseUI"),
+            to: agentsURL,
+            overwrite: false
+        )) ?? false
+        if didWriteAgents {
+            Console.ok("Generated AGENTS.md — component map for humans and coding agents")
+        }
 
         // 3. Next steps.
         if let accent = options.accent, let radius = options.radius {
@@ -297,6 +326,91 @@ struct CommandInit {
         """)
 
         return 0
+    }
+
+    private func setupXcodeProject(project: URL, options: ParsedOptions) -> Int32 {
+        let root = project.appendingPathComponent("PulseUIComponents", isDirectory: true)
+        do {
+            for file in EmbeddedPulse.files where !EmbeddedPulse.allComponentNames.contains(file.name) {
+                guard let content = EmbeddedPulse.content(of: file.name) else { continue }
+                _ = try PulseCLI.write(content, to: root.appendingPathComponent(file.relativePath), overwrite: false)
+            }
+            let theme = ThemeTemplate.render(accent: options.accent, radius: options.radius, includeImport: false)
+            _ = try PulseCLI.write(theme, to: root.appendingPathComponent("PulseUITheme.swift"), overwrite: false)
+            _ = try PulseCLI.write(AgentsTemplate.render(componentRoot: "PulseUIComponents"), to: project.appendingPathComponent("AGENTS.md"), overwrite: false)
+        } catch {
+            Console.error("Could not create PulseUI files: \(error.localizedDescription)")
+            return 1
+        }
+
+        guard let xcodeproj = try? FileManager.default.contentsOfDirectory(at: project, includingPropertiesForKeys: nil)
+            .first(where: { $0.pathExtension == "xcodeproj" }),
+              patchXcodeProject(at: xcodeproj.appendingPathComponent("project.pbxproj")) else {
+            Console.error("Could not attach PulseUIComponents to the Xcode target.")
+            Console.info("The files are available in PulseUIComponents. Add that folder to the app target in Xcode.")
+            return 1
+        }
+
+        Console.ok("Created PulseUIComponents with shared theme files")
+        Console.ok("Attached PulseUIComponents to the Xcode target")
+        Console.ok("Generated AGENTS.md for humans and coding agents")
+        Console.info("""
+
+        Done. PulseUI source files are now part of the app target.
+        Add components with:
+          pulse add button toast alert
+
+        Use PulseUI types directly in this Xcode target (no `import PulseUI`).
+        """)
+        return 0
+    }
+
+    private func patchXcodeProject(at pbxproj: URL) -> Bool {
+        guard var text = try? String(contentsOf: pbxproj, encoding: .utf8),
+              !text.contains("path = PulseUIComponents;") else { return true }
+        let id = UUID().uuidString.replacingOccurrences(of: "-", with: "").prefix(24).uppercased()
+        let marker = "\(id) /* PulseUIComponents */"
+        let group = """
+        \(marker) = {
+            isa = PBXFileSystemSynchronizedRootGroup;
+            explicitFileTypes = {
+            };
+            explicitFolders = (
+            );
+            path = PulseUIComponents;
+            sourceTree = "<group>";
+        };
+        """
+        if let section = text.range(of: "/* Begin PBXFileSystemSynchronizedRootGroup section */") {
+            text.insert(contentsOf: group, at: section.upperBound)
+        } else if let section = text.range(of: "/* Begin PBXFrameworksBuildPhase section */") {
+            text.insert(contentsOf: "/* Begin PBXFileSystemSynchronizedRootGroup section */\n\(group)/* End PBXFileSystemSynchronizedRootGroup section */\n\n", at: section.lowerBound)
+        } else {
+            return false
+        }
+
+        guard let mainGroup = text.range(of: "mainGroup = ") else { return false }
+        let mainIDStart = mainGroup.upperBound
+        guard let mainIDEnd = text.range(of: ";", range: mainIDStart..<text.endIndex) else { return false }
+        let mainID = String(text[mainIDStart..<mainIDEnd.lowerBound]).trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let mainObject = text.range(of: "\(mainID) ") else { return false }
+        guard let children = text.range(of: "children = (", range: mainObject.upperBound..<text.endIndex),
+              let childrenEnd = text.range(of: ");", range: children.upperBound..<text.endIndex) else { return false }
+        text.insert(contentsOf: "\n\t\t\t\t\(marker),", at: childrenEnd.lowerBound)
+
+        guard let target = text.range(of: "isa = PBXNativeTarget;"),
+              let targetStart = text.range(of: "\n\t\t", options: .backwards, range: text.startIndex..<target.lowerBound),
+              let targetEnd = text.range(of: "\n\t\t};", range: target.upperBound..<text.endIndex) else { return false }
+        let targetBody = text[targetStart.lowerBound..<targetEnd.lowerBound]
+        if !targetBody.contains("fileSystemSynchronizedGroups = (") {
+            text.insert(contentsOf: "\n\t\t\tfileSystemSynchronizedGroups = (\n\t\t\t\t\(marker),\n\t\t\t);", at: targetEnd.lowerBound)
+        }
+        do {
+            try text.write(to: pbxproj, atomically: true, encoding: .utf8)
+            return true
+        } catch {
+            return false
+        }
     }
 
     private func addDependency(to packageFile: URL) -> Bool {
@@ -397,11 +511,13 @@ struct CommandAdd {
             }
         }
 
-        let hasProject = PulseCLI.detectProjectFolder() != nil
+        let packageProject = PulseCLI.detectProjectFolder()
+        let xcodeProject = packageProject == nil ? PulseCLI.detectXcodeProjectFolder() : nil
+        let hasProject = packageProject != nil || xcodeProject != nil
 
         // 1. Ensure dependency (same as init) unless vendoring.
-        if options.source {
-            vendor(resolved, options: options)
+        if options.source || xcodeProject != nil {
+            vendor(resolved, options: options, project: packageProject ?? xcodeProject)
         } else if hasProject {
             Console.ok("\(resolved.count) component\(resolved.count == 1 ? "" : "s") resolved via the PulseUI dependency")
         } else {
@@ -423,12 +539,17 @@ struct CommandAdd {
         return 0
     }
 
-    private func vendor(_ names: [String], options: ParsedOptions) {
-        guard let project = PulseCLI.detectProjectFolder() else {
-            Console.error("Vendoring needs a project folder with Package.swift.")
+    private func vendor(_ names: [String], options: ParsedOptions, project: URL?) {
+        guard let project else {
+            Console.error("Vendoring needs a Swift package or Xcode project.")
             return
         }
-        let root = PulseCLI.vendoredRoot(project: project, dir: options.dir)
+        let root: URL
+        if PulseCLI.detectProjectFolder(startingAt: project.path) != nil {
+            root = PulseCLI.vendoredRoot(project: project, dir: options.dir)
+        } else {
+            root = project.appendingPathComponent("PulseUIComponents")
+        }
         var wrote = 0
 
         // Shared support: theme, utilities, entry.
@@ -457,6 +578,9 @@ struct CommandAdd {
             }
         }
 
+        if !FileManager.default.fileExists(atPath: project.appendingPathComponent("AGENTS.md").path) {
+            _ = try? PulseCLI.write(AgentsTemplate.render(componentRoot: relative(root, to: project)), to: project.appendingPathComponent("AGENTS.md"), overwrite: false)
+        }
         Console.ok("Vendored \(names.count) component(s) — theme + helpers ready in \(relative(root, to: project))")
         Console.info("Add that folder to your project via Xcode (red-folder reference works) or a local SPM target:")
         Console.dim("  .target(name: \"PulseUI\", path: \"\(relative(root, to: project))\", exclude: [\"Resources\"])")
@@ -510,13 +634,16 @@ struct CommandAdd {
 struct CommandRemove {
     func run(arguments: [String]) -> Int32 {
         let options = ParsedOptions(arguments: arguments)
-        guard let project = PulseCLI.detectProjectFolder() else {
-            Console.error("No Package.swift found in this folder or any parent.")
+        guard let project = PulseCLI.detectProjectFolder() ?? PulseCLI.detectXcodeProjectFolder() else {
+            Console.error("No Package.swift or Xcode project found in this folder or any parent.")
             return 1
         }
 
+        let isSwiftPackage = FileManager.default.fileExists(atPath: project.appendingPathComponent("Package.swift").path)
         let packageFile = project.appendingPathComponent("Package.swift")
-        let themeFile = project.appendingPathComponent("Sources/PulseUITheme.swift")
+        let themeFile = isSwiftPackage
+            ? project.appendingPathComponent("Sources/PulseUITheme.swift")
+            : project.appendingPathComponent("PulseUIComponents/PulseUITheme.swift")
         let themeText = (try? String(contentsOf: themeFile, encoding: .utf8)) ?? ""
         let hasTheme = themeText.contains("Generated by pulse init") ||
             themeText.contains("PulseUI theme — one file to own the whole look & feel.")
@@ -540,7 +667,7 @@ struct CommandRemove {
             return 0
         }
 
-        if hasDependency {
+        if hasDependency && isSwiftPackage {
             guard let updated = removeDependency(from: packageText) else {
                 Console.error("Could not safely identify PulseUI lines in Package.swift. No files were changed.")
                 return 1
@@ -679,12 +806,12 @@ struct CommandDoctor {
 // MARK: - Theme template
 
 enum ThemeTemplate {
-    static func render(accent: String?, radius: Int?) -> String {
+    static func render(accent: String?, radius: Int?, includeImport: Bool = true) -> String {
         let accentValue = (accent ?? "D9FE3E").replacingOccurrences(of: "#", with: "").uppercased()
         let radiusValue = min(max(radius ?? 10, 4), 24)
+        let imports = includeImport ? "    import SwiftUI\n    import PulseUI\n" : "    import SwiftUI\n"
         return """
-    import SwiftUI
-    import PulseUI
+    \(imports)
 
     // ============================================================
     // Generated by pulse init — PulseUI theme — one file to own the whole look & feel.
@@ -721,5 +848,48 @@ enum ThemeTemplate {
     //   ContentView()
     //       .pulseTheme(pulse)
     """
+    }
+}
+
+enum AgentsTemplate {
+    static func render(componentRoot: String) -> String {
+        """
+        # PulseUI project guide
+
+        This project uses PulseUI, a source-owned SwiftUI component system.
+        The vendored sources live at `\(componentRoot)/`.
+
+        ## Rules for humans and coding agents
+
+        - Use the existing PulseUI components before creating a custom equivalent.
+        - Keep component source changes inside `\(componentRoot)/` and app-specific
+          composition in the app target's normal source folder.
+        - In this Xcode project, PulseUI is vendored into the app target, so do not
+          add `import PulseUI`; use the public types directly.
+        - Preserve `PulseTheme`, accessibility labels, Dynamic Type and Reduce Motion.
+        - Do not add Liquid Glass to ordinary content cards, tables or charts.
+          Reserve it for navigation, toolbars, menus and transient surfaces.
+
+        ## CLI workflow
+
+        ```bash
+        pulse add button card table
+        pulse list
+        pulse doctor
+        pulse remove --yes
+        ```
+
+        `pulse add <name...>` copies component source into `\(componentRoot)/`.
+        `pulse remove` removes only the integration scaffold and keeps vendored
+        component files. Never delete the component folder unless the user
+        explicitly asks for it.
+
+        ## Component map
+
+        Components are grouped below by their source folders. Search
+        `\(componentRoot)/Components/` before adding new UI:
+
+        \(EmbeddedPulse.allComponentNames.sorted().map { "- \($0)" }.joined(separator: "\n"))
+        """
     }
 }

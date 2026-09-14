@@ -735,7 +735,11 @@ struct CommandRemove {
 struct CommandUninstall {
     func run(arguments: [String]) -> Int32 {
         let options = ParsedOptions(arguments: arguments)
-        let executable = URL(fileURLWithPath: CommandLine.arguments.first ?? "")
+        guard let executable = locateExecutable() else {
+            Console.warn("The current pulse executable path could not be identified.")
+            Console.info("Remove it with your package manager or delete the installed pulse binary.")
+            return 1
+        }
         let path = executable.standardizedFileURL.path
         let resolvedPath = executable.resolvingSymlinksInPath().standardizedFileURL.path
         let isHomebrew = resolvedPath.contains("/Cellar/") || resolvedPath.contains("/Homebrew/")
@@ -755,12 +759,6 @@ struct CommandUninstall {
             return 0
         }
 
-        guard !path.isEmpty, FileManager.default.isExecutableFile(atPath: path) else {
-            Console.warn("The current pulse executable path could not be identified.")
-            Console.info("Remove it with your package manager or delete the installed pulse binary.")
-            return 1
-        }
-
         Console.step("Executable: \(path)")
         Console.ok("Your projects and component sources will not be changed")
         guard options.yes || Console.prompt("Remove this CLI?") else {
@@ -778,6 +776,26 @@ struct CommandUninstall {
             Console.info("Try: rm \(path)")
             return 1
         }
+    }
+
+    private func locateExecutable() -> URL? {
+        let raw = CommandLine.arguments.first ?? ""
+        let fm = FileManager.default
+        if raw.contains("/") {
+            let url = URL(fileURLWithPath: raw).standardizedFileURL
+            return fm.isExecutableFile(atPath: url.path) ? url : nil
+        }
+
+        let paths = (ProcessInfo.processInfo.environment["PATH"] ?? "")
+            .split(separator: ":")
+            .map(String.init)
+        for directory in paths {
+            let candidate = URL(fileURLWithPath: directory).appendingPathComponent(raw)
+            if fm.isExecutableFile(atPath: candidate.path) {
+                return candidate
+            }
+        }
+        return nil
     }
 }
 

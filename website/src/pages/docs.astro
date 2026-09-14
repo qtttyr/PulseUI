@@ -1,0 +1,89 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base title="Docs — the Pulse way" description="A clear, native-first guide to installing and shipping PulseUI.">
+  <section class="docs-hero">
+    <div class="container docs-hero-grid">
+      <div>
+        <span class="eyebrow"><b>Documentation</b>&nbsp;·&nbsp;the Pulse way</span>
+        <h1 class="display">Less setup.<br /><span class="outline-text">More signal.</span></h1>
+        <p class="hero-copy">PulseUI is a source-owned SwiftUI system. You choose the language of your interface, the CLI puts the exact pieces in your project, and you stay in control.</p>
+        <div class="hero-actions">
+          <a class="btn btn-accent" href="/studio/">Open the Studio <span>→</span></a>
+          <a class="text-link" href="/install/">Installation guide <span>↗</span></a>
+        </div>
+      </div>
+      <div class="signal-orbit" aria-hidden="true">
+        <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div>
+        <div class="orbit-core"><span></span><b>native</b><small>SwiftUI</small></div>
+        <i class="orbit-node node-a"></i><i class="orbit-node node-b"></i><i class="orbit-node node-c"></i>
+      </div>
+    </div>
+  </section>
+
+  <section class="container docs-flow">
+    <div class="flow-intro"><span class="section-index">01</span><h2>From blank project<br /><em>to pulse.</em></h2><p>No package archaeology. No folder choreography. The CLI reads the project you already have and prepares the native path.</p></div>
+    <div class="flow-steps">
+      <article class="flow-step"><span class="step-number">01</span><div><h3>Initialize once</h3><p>Run the installer, then initialize from the folder that contains your Xcode project.</p><code>pulse init --accent '#D9FE3E' --radius 10</code></div></article>
+      <article class="flow-step"><span class="step-number">02</span><div><h3>Pick only what matters</h3><p>Add source-owned components. Their dependencies are resolved for you and the app target is kept buildable.</p><code>pulse add button table chart</code></div></article>
+      <article class="flow-step"><span class="step-number">03</span><div><h3>Compose, don't configure</h3><p>Use the public SwiftUI API directly. The theme is already attached at the app root and remains yours to edit.</p><code>ContentView().pulseTheme(pulse)</code></div></article>
+    </div>
+  </section>
+
+  <section class="principles">
+    <div class="container principles-grid">
+      <div><span class="section-index">02</span><h2>The rules<br /><em>behind the glow.</em></h2></div>
+      <div class="principle-list">
+        <div><span>01</span><h3>Native first</h3><p>SwiftUI APIs, platform conventions, Dynamic Type, VoiceOver and keyboard navigation are part of the component — not an afterthought.</p></div>
+        <div><span>02</span><h3>Glass with intent</h3><p>Liquid Glass belongs around navigation, toolbars, menus and transient actions. Content stays calm, legible and fast.</p></div>
+        <div><span>03</span><h3>Own the source</h3><p>Pulse copies the source into your project. No runtime lock-in, opaque generator or hidden design layer.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container docs-end">
+    <span class="section-index">03</span>
+    <h2>Ready when<br /><em>your idea is.</em></h2>
+    <p>Browse every component, tune the system in Studio, then ship the smallest useful surface.</p>
+    <a class="btn btn-accent" href="/components/">Explore components <span>→</span></a>
+  </section>
+</Base>
+
+<style>
+  .docs-hero { padding: clamp(64px, 11vw, 140px) 0 100px; overflow: hidden; }
+  .docs-hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, .75fr); gap: 48px; align-items: center; }
+  .docs-hero h1 { margin-top: 16px; font-size: clamp(3.4rem, 8vw, 7.2rem); line-height: .92; }
+  .hero-copy { max-width: 530px; margin: 24px 0 28px; color: var(--fg-secondary); font-size: 1.08rem; line-height: 1.65; }
+  .hero-actions { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+  .text-link { color: var(--fg-secondary); font-size: 14px; }
+  .text-link span { color: var(--accent-ink); margin-left: 6px; }
+  .signal-orbit { position: relative; aspect-ratio: 1; max-width: 430px; justify-self: end; }
+  .orbit { position: absolute; inset: 14%; border: 1px solid color-mix(in srgb, var(--accent) 32%, transparent); border-radius: 50%; animation: orbit-spin 18s linear infinite; }
+  .orbit-b { inset: 27%; border-color: color-mix(in srgb, var(--accent) 18%, transparent); animation-direction: reverse; animation-duration: 12s; }
+  .orbit-core { position: absolute; inset: 34%; display: grid; place-content: center; text-align: center; border: 1px solid color-mix(in srgb, var(--accent) 48%, var(--border)); border-radius: 50%; background: color-mix(in srgb, var(--accent) 10%, var(--panel)); box-shadow: 0 0 70px color-mix(in srgb, var(--accent) 20%, transparent); animation: core-pulse 4s ease-in-out infinite; }
+  .orbit-core span { width: 10px; height: 10px; margin: 0 auto 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 20px var(--accent); }
+  .orbit-core b { font: 700 12px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; }
+  .orbit-core small { margin-top: 4px; color: var(--fg-tertiary); font-size: 11px; }
+  .orbit-node { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 18px var(--accent); }
+  .node-a { top: 11%; left: 54%; }.node-b { right: 14%; bottom: 27%; }.node-c { left: 16%; bottom: 22%; }
+  @keyframes orbit-spin { to { transform: rotate(360deg); } }
+  @keyframes core-pulse { 50% { transform: scale(1.035); box-shadow: 0 0 100px color-mix(in srgb, var(--accent) 28%, transparent); } }
+  .docs-flow { display: grid; grid-template-columns: .7fr 1.3fr; gap: 80px; padding-bottom: 120px; }
+  .section-index { color: var(--accent-ink); font: 11px var(--font-mono); letter-spacing: .12em; }
+  .flow-intro h2, .principles h2, .docs-end h2 { margin: 15px 0 18px; font-size: clamp(2.4rem, 5vw, 4.5rem); line-height: .98; letter-spacing: -.06em; }
+  h2 em { color: var(--accent-ink); font-style: normal; }
+  .flow-intro p, .docs-end p { max-width: 310px; color: var(--fg-secondary); line-height: 1.6; }
+  .flow-steps { display: grid; gap: 10px; }
+  .flow-step { display: grid; grid-template-columns: 48px 1fr; gap: 20px; padding: 24px 0; border-top: 1px solid var(--border); transition: transform .3s var(--motion-snappy); }
+  .flow-step:hover { transform: translateX(8px); }
+  .step-number { color: var(--accent-ink); font: 12px var(--font-mono); }
+  .flow-step h3 { margin: 0 0 7px; font-size: 1.2rem; }.flow-step p { margin: 0 0 14px; color: var(--fg-secondary); line-height: 1.55; }
+  code { display: inline-block; max-width: 100%; overflow: auto; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; color: var(--accent-ink); background: var(--surface-muted); font: 11px var(--font-mono); white-space: nowrap; }
+  .principles { padding: 100px 0; background: var(--bg-soft); border-block: 1px solid var(--border); }
+  .principles-grid { display: grid; grid-template-columns: .7fr 1.3fr; gap: 80px; }.principle-list { display: grid; gap: 30px; }
+  .principle-list > div { display: grid; grid-template-columns: 40px 1fr; gap: 14px; padding-top: 20px; border-top: 1px solid var(--border); }.principle-list span { color: var(--accent-ink); font: 11px var(--font-mono); }.principle-list h3 { margin: 0 0 7px; }.principle-list p { margin: 0; color: var(--fg-secondary); line-height: 1.6; }
+  .docs-end { padding: 130px 0 40px; }.docs-end p { margin-bottom: 24px; }
+  @media (max-width: 800px) { .docs-hero-grid, .docs-flow, .principles-grid { grid-template-columns: 1fr; gap: 44px; }.signal-orbit { justify-self: center; width: min(100%, 350px); }.docs-flow { padding-bottom: 80px; } }
+  @media (prefers-reduced-motion: reduce) { .orbit, .orbit-core { animation: none; }.flow-step:hover { transform: none; } }
+</style>

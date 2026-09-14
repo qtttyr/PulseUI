@@ -29,6 +29,19 @@ const presets = [
     </div>
   </section>
 
+  <section class="container command-dock" aria-label="Your Pulse setup">
+    <div class="dock-intro">
+      <span class="dock-kicker"><i class="alive-dot"></i> your setup</span>
+      <h2>Shape it. <span>Ship it.</span></h2>
+      <p>Choose your look and components. Your exact terminal flow is ready before you scroll.</p>
+    </div>
+    <div class="dock-actions">
+      <div class="dock-command"><span class="dock-index">01</span><div><small>Initialize your theme</small><code id="setup-command"></code></div><button class="copy-btn" data-copy-target="setup-command">Copy</button></div>
+      <div class="dock-command"><span class="dock-index">02</span><div><small>Add selected components <b data-selected-count>0 selected</b></small><code id="add-command"></code></div><button class="copy-btn" data-copy-target="add-command">Copy</button></div>
+      <button class="dock-copy-all" data-copy-all><span>Copy setup</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1 1-2 2-2h10"/></svg></button>
+    </div>
+  </section>
+
   <div class="container studio-grid">
     <aside class="controls" data-controls>
       <div class="ctl-card">
@@ -73,33 +86,6 @@ const presets = [
         <div class="ctl-range-steps"><span>sharp</span><span>curvy</span></div>
       </div>
 
-      <div class="ctl-card ctl-code">
-        <div class="ctl-head">
-          <span>Swift theme</span>
-          <button class="copy-btn" data-copy data-copy-target="swift-code">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect width="14" height="14" x="8" y="8" rx="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-            Copy
-          </button>
-        </div>
-        <pre class="swift" id="swift-code"></pre>
-      </div>
-
-      <div class="ctl-card ctl-code">
-        <div class="ctl-head">
-          <span>Project commands</span>
-        </div>
-        <label class="command-label" for="setup-command">1 · Setup theme</label>
-        <div class="command-copy">
-          <code id="setup-command"></code>
-          <button class="copy-btn" data-copy-target="setup-command" aria-label="Copy setup command">Copy</button>
-        </div>
-        <label class="command-label" for="add-command">2 · Add selected</label>
-        <div class="command-copy">
-          <code id="add-command"></code>
-          <button class="copy-btn" data-copy-target="add-command" aria-label="Copy add command">Copy</button>
-        </div>
-      </div>
-
       <div class="ctl-card component-picker">
         <div class="ctl-head">
           <span>Components</span>
@@ -136,10 +122,9 @@ const presets = [
     const radiusInput = document.querySelector("[data-radius-input]");
     const hexAccent = document.querySelector('[data-hex="accent"]');
     const hexRadius = document.querySelector('[data-hex="radius"]');
-    const swiftPre = document.getElementById("swift-code");
-    const copyBtn = document.querySelector('[data-copy-target="swift-code"]');
     const setupCommand = document.getElementById("setup-command");
     const addCommand = document.getElementById("add-command");
+    const selectedCount = document.querySelector("[data-selected-count]");
     const componentChecks = [...document.querySelectorAll("[data-component-check]")];
     const toggleComponents = document.querySelector("[data-toggle-components]");
 
@@ -202,31 +187,7 @@ const presets = [
 
       hexAccent.textContent = accent.toUpperCase();
       hexRadius.textContent = `${r}px`;
-      renderSwift();
       renderCommands();
-    }
-
-    function renderSwift() {
-      const u = accent.replace("#", "").toUpperCase();
-      const L = luminance(accent);
-      const fg = L > 0.5 ? "0x10150A" : "0xFFFFFF";
-      swiftPre.textContent = `import SwiftUI
-
-// Generated in the Pulse Studio — inject at app root:
-//   .pulseTheme(pulseStudioTheme)
-let pulseStudioTheme = PulseTheme(
-    colors: ColorTokens(
-        accent: .init(hex: 0x${u}),
-        accentForeground: .init(hex: ${fg}),
-        gradientAccent: [
-            .init(hex: 0x${u}),
-            .init(hex: 0x46F0FF),
-        ]
-    ),
-    radius: RadiusTokens(md: ${radius}),
-    motion: .default
-)`;
-      copyBtn.dataset.copy = swiftPre.textContent;
     }
 
     function renderCommands() {
@@ -237,6 +198,7 @@ let pulseStudioTheme = PulseTheme(
         : "pulse add <component...>";
       setupCommand.dataset.copy = setupCommand.textContent;
       addCommand.dataset.copy = addCommand.textContent;
+      selectedCount.textContent = `${selected.length} selected`;
       toggleComponents.textContent = selected.length === componentChecks.length ? "Clear" : "Select all";
     }
 
@@ -287,6 +249,13 @@ let pulseStudioTheme = PulseTheme(
         setTimeout(() => (button.innerHTML = html), 1800);
       });
     });
+    document.querySelector("[data-copy-all]").addEventListener("click", async (event) => {
+      const button = event.currentTarget;
+      await navigator.clipboard.writeText(`${setupCommand.textContent}\n${addCommand.textContent}`);
+      const label = button.querySelector("span");
+      label.textContent = "Copied";
+      setTimeout(() => (label.textContent = "Copy setup"), 1800);
+    });
 
     window.matchMedia("(prefers-color-scheme: light)").addEventListener("change", () => skin === "auto" && apply());
     apply();
@@ -328,9 +297,44 @@ let pulseStudioTheme = PulseTheme(
     align-items: start;
     padding-bottom: clamp(40px, 8vh, 80px);
   }
+  .command-dock {
+    position: sticky;
+    top: calc(var(--nav-h) + 12px);
+    z-index: 20;
+    display: grid;
+    grid-template-columns: minmax(220px, 0.7fr) minmax(0, 1.8fr);
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 26px;
+    padding: 18px;
+    border: 1px solid color-mix(in srgb, var(--accent) 28%, var(--border));
+    border-radius: 20px;
+    background: color-mix(in srgb, var(--panel) 88%, transparent);
+    box-shadow: 0 16px 44px color-mix(in srgb, var(--fg) 8%, transparent);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+  }
+  .dock-intro h2 { margin: 8px 0 3px; font-size: clamp(1.35rem, 2vw, 1.8rem); letter-spacing: -0.04em; }
+  .dock-intro h2 span { color: var(--accent-ink); }
+  .dock-intro p { margin: 0; color: var(--fg-tertiary); font-size: 12px; line-height: 1.45; }
+  .dock-kicker { display: inline-flex; align-items: center; gap: 8px; color: var(--accent-ink); font: 10px var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; }
+  .dock-actions { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; gap: 8px; }
+  .dock-command { display: flex; align-items: center; gap: 10px; min-width: 0; padding: 10px 11px; border: 1px solid var(--border); border-radius: 13px; background: var(--surface-muted); }
+  .dock-index { color: var(--accent-ink); font: 10px var(--font-mono); }
+  .dock-command div { min-width: 0; flex: 1; }
+  .dock-command small { display: block; margin-bottom: 4px; color: var(--fg-tertiary); font-size: 10px; }
+  .dock-command small b { margin-left: 5px; color: var(--accent-ink); font-weight: 500; }
+  .dock-command code { display: block; overflow: hidden; color: var(--fg); font: 11px var(--font-mono); text-overflow: ellipsis; white-space: nowrap; }
+  .dock-copy-all { display: inline-flex; align-items: center; gap: 8px; padding: 0 14px; border: 1px solid var(--accent); border-radius: 13px; color: var(--accent-contrast); background: var(--accent); cursor: pointer; font: 600 12px var(--font-body); white-space: nowrap; transition: transform 0.2s var(--motion-snappy), box-shadow 0.2s ease; }
+  .dock-copy-all:hover { transform: translateY(-2px); box-shadow: 0 8px 22px color-mix(in srgb, var(--accent) 28%, transparent); }
   @media (max-width: 1000px) {
+    .command-dock { position: static; grid-template-columns: 1fr; }
     .studio-grid {
       grid-template-columns: minmax(0, 1fr);
+    }
+    @media (max-width: 680px) {
+      .dock-actions { grid-template-columns: 1fr; }
+      .dock-copy-all { min-height: 42px; justify-content: center; }
     }
   }
 

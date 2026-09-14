@@ -91,4 +91,13 @@ struct CLILogicTests {
         let none = cmd.suggestions(for: "zzzzzz", from: available)
         #expect(none == "pulse list")
     }
+
+    @Test("Generated Xcode theme follows token initializer order")
+    func generatedXcodeThemeCompilesAgainstTokens() {
+        let theme = ThemeTemplate.render(accent: "#B51A00", radius: 10, includeImport: false)
+        #expect(theme.range(of: "success:")!.lowerBound < theme.range(of: "ring:")!.lowerBound)
+        #expect(theme.range(of: "spacing:")!.lowerBound < theme.range(of: "radius:")!.lowerBound)
+        #expect(theme.contains("accent: Color(light: 0xB51A00"))
+        #expect(theme.contains("md: 10"))
+    }
 }
